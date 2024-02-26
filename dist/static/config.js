@@ -1,4 +1,7 @@
-export const Config = {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Config = void 0;
+exports.Config = {
     server: {
         port: 8000
     },
@@ -17,4 +20,5 @@ export const Config = {
             connectionLimit: 1
         }
     }
-} // theo đúng form như interface á
+}; // theo đúng form như interface á
+//# sourceMappingURL=config.js.map

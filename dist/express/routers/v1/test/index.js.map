@@ -1,0 +1,1 @@
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../../../src/express/routers/v1/test/index.ts"],"names":[],"mappings":";;;;;;AAAA,sDAA8B;AAC9B,MAAM,GAAG,GAAG,IAAA,iBAAO,GAAE,CAAC;AACT,QAAA,MAAM,GAAG,iBAAO,CAAC,MAAM,EAAE,CAAC;AAEvC,GAAG,CAAC,GAAG,CAAC,GAAG,EAAE,CAAC,GAAG,EAAC,GAAG,EAAE,EAAE;IACrB,GAAG,CAAC,IAAI,CAAC,IAAI,CAAC,CAAA;AAClB,CAAC,CAAC,CAAA"}

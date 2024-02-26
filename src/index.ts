@@ -1,7 +1,11 @@
 import express from 'express';
-import config from './static/config';
+import { Config } from './static/config';
+
 const app = express();
-export interface App {
-    app: Object,
-    config: Object,
-}
+
+app.use('/', require('./express/routers'));
+
+
+app.listen(`${Config.server.port}` || `${process.env.PORT}`, () => {
+    console.log(`[SYSTEM] System started at port ${Config.server.port || process.env.PORT}`)
+})
