@@ -17,4 +17,4 @@ export const Config = {
             connectionLimit: 1
         }
     }
-} // theo đúng form như interface á
+}
