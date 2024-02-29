@@ -7,6 +7,7 @@ exports.Config = {
     },
     database: {
         mysql: {
+            url: `mysql://ecp:faGnP.YBCfX)M3V0@10.10.10.12:3306/e-commerce-platform`,
             type: "mariadb",
             host: "localhost",
             port: 3306,
@@ -20,5 +21,5 @@ exports.Config = {
             connectionLimit: 1
         }
     }
-}; // theo đúng form như interface á
+};
 //# sourceMappingURL=config.js.map
