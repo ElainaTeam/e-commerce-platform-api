@@ -9,19 +9,20 @@ const index_1 = __importDefault(require("./express/routers/index"));
 const client_1 = require("@prisma/client");
 const prisma = new client_1.PrismaClient();
 const app = (0, express_1.default)();
-app.use('/', index_1.default);
-app.listen(`${config_1.Config.server.port}` || `${process.env.PORT}`, () => {
-    console.log(`[SYSTEM] System started at port ${config_1.Config.server.port || process.env.PORT}`);
-});
-// async function main() {
-//     const users = await prisma.user.findMany();
-//     console.log(users);
-// }
-// main()
-//     .catch(e => {
-//         throw e;
-//     })
-//     .finally(async () => {
-//         await prisma.$disconnect();
-//     });
+class App {
+    Express = app;
+    Config = config_1.Config;
+    Prisma = prisma;
+    constructor() {
+    }
+    execute() {
+        app.use('/', index_1.default);
+        app.listen(`${config_1.Config.server.port}` || `${process.env.PORT}`, () => {
+            console.log(`[SYSTEM] System started at port ${config_1.Config.server.port || process.env.PORT}`);
+        });
+    }
+}
+exports.default = App;
+const app2 = new App();
+app2.execute();
 //# sourceMappingURL=index.js.map
