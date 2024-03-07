@@ -14,5 +14,5 @@ export = {
     }, 
     forwardAuthenticated: async function() {
         
-    }
+    },
 }

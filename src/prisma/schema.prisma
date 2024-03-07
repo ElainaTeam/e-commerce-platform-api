@@ -9,5 +9,15 @@ model users {
   id                      String      @unique @db.VarChar(255)
   email                   String      @unique(map: "email") @db.VarChar(255)
   username                String
-  password                String
+  hashed_password         String
+}
+model login_states {
+  id                      String      @unique @db.VarChar(255)
+  user_id                 String      @unique @db.VarChar(255)
+  create_at               String      @unique @db.VarChar(255)
+  state                   String      @unique @db.VarChar(255)
+  platform                String      @unique @db.VarChar(255)
+  next_step               String      @unique @db.VarChar(255)
+  status                  String      @unique @db.VarChar(255)
+
 }

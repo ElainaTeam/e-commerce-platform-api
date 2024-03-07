@@ -2,10 +2,11 @@ import express from 'express'
 import bcrypt from 'bcrypt'
 import prisma from '../../../../utils/databases/prisma'
 import jwt from 'jsonwebtoken'
+import { Config } from '../../../../static/config'
 
 const router = express.Router();
-router.get('/state', async (req,res) => {
-    
+router.get('/state', async (req, res) => {
+
 });
 /**
  *  payload JWT TEST {
@@ -14,61 +15,84 @@ router.get('/state', async (req,res) => {
     "iat": 1516239022
     }
  */
-router.post('/callback', async (req ,res) => {
-    if (!req.body.state) return res.json({code: 400, msgCode: 'a-u-100'}); // this means no state was provided
+router.get('/callback', async (req, res) => {
+    // oauth2 login
+});
+router.post('/callback', async (req, res) => {
+    if (!req.body.state) return res.json({ code: 400, msgCode: 'a-u-100' });
     const findLoginState: any = await prisma.login_states?.findMany({
         where: {
             state: req.body.state
         }
     });
-    if (!findLoginState) return res.json({code: 400, msgCode: 'a-u-101'}); // this means provided state is not valid
-    const findUserByState : any = await prisma.users?.findMany({
-        where: {
-            id: findLoginState.user_id
-        }
-    });
-    if (!findUserByState) return res.json({code: 400, msgCode: 'a-u-102'}); // wait what, who are you? 
-    // actually, this is the third time I tried to use TS, so i have no solution for this
-    //I'll push some may call important code cus this is too chaos
-    //I'm talking abt restarting server, the code is fine
-    // okay
-    // Restart your PC || PETER || 
-    //wait for me push some code first cuh || agree
-    // should I commit it? YES!!!
-    
-    //nvm no permission, huh
-    //
-    switch (findLoginState.platform) {
-        case 'form':
-            if (!req.body.username || !req.body.password) {
-                return res.json({code: 400, msgCode: 'a-u-100'}); // this means no login info was provided
-            } else if (req.body.username || req.body.password) {
-                bcrypt.compare(req.body.password, findUserByState.hashed_password, function(err, isTrue) {
-                    if (isTrue) {
-                        return next({state: findLoginState.state, user_id: findUserByState.user_id});
+    if (!findLoginState) return res.json({ code: 400, msgCode: 'a-u-101' });
+    switch (findLoginState.next_step) {
+        case 'auth':
+            if (!req.body.identify || !req.body.password) return res.json({ code: 400, msgCode: 'a-u-100' }); // this means no login info was provided
+            const findUserByEmail: any = await prisma.users?.findMany({
+                where: {
+                    email: req.body.identify
+                }
+            });
+            bcrypt.compare(req.body.password, findUserByEmail.hashed_password, async function (err, isTrue) {
+                if (isTrue) {
+                    await prisma.login_states?.update({
+                        where: {
+                            state: req.body.state
+                        },
+                        data: {
+                            user_id: findUserByEmail.id
+                        }
+                    });
+                    if (findUserByEmail.flags.includes('2fa')) {
+                        await prisma.login_states?.update({
+                            where: {
+                                state: req.body.state
+                            },
+                            data: {
+                                next_step: '2fa'
+                            }
+                        });
+                        return res.json({ code: 201, msgCode: 'a-u-105' }); // need an additional step
                     } else {
-                        return res.json({code: 400, msgCode: 'a-u-103'}); // invalid login info
+                        return createLoginSession({ state: findLoginState.state, user: findUserByEmail });
                     }
-                });
-            } else if (req.body.code) {
+                } else {
+                    return res.json({ code: 400, msgCode: 'a-u-103' }); // invalid login info
+                }
+            })
 
-            }
+
+            break;
+        case '2fa':
             break;
         default:
-            return res.json({code: 400, msgCode: 'a-u-104'}); // method not allowed
+            break;
     }
-    async function next() {
-
+    async function createLoginSession(data: any) {
+        await prisma.login_states?.update({
+            where: {
+                state: req.body.state
+            },
+            data: {
+                status: 'finished',
+                next_step: ''
+            }
+        });
+        // update the status of the state is finished and start jwt
+        // data is going to contain an object, it's including user obj and state
+        const token = jwt.sign(data.user.id, Config.jwt.JWT_SECRET, { expiresIn: Config.jwt.JWT_TIME_LIVE })
+        return res.json({ code: 200, msgCode: 'a-u-200', token });
     }
 });
-router.post('/register', async (req ,res) => {
-    if (!req.body.username || !req.body.password) return res.json({code: 400, msgCode: 'a-u-400'});
+router.post('/register', async (req, res) => {
+    if (!req.body.username || !req.body.password) return res.json({ code: 400, msgCode: 'a-u-400' });
     const findUserByUsername = await prisma.users?.findMany({
         where: {
             username: req.body.username
         }
     });
-    bcrypt.hash(req.body.password, 10, function(err, hash) {
+    bcrypt.hash(req.body.password, 10, function (err, hash) {
         console.log(hash)
     });
 });
