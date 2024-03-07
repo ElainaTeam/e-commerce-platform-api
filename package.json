@@ -37,6 +37,7 @@
     "cookie": "^0.4.1",
     "cookie-parser": "^1.4.6",
     "cookie-signature": "^1.0.6",
+    "cors": "^2.8.5",
     "date-fns": "^2.30.0",
     "debug": "^2.6.9",
     "define-data-property": "^1.1.4",
@@ -85,6 +86,7 @@
     "is-fullwidth-code-point": "^3.0.0",
     "is-glob": "^4.0.3",
     "is-number": "^7.0.0",
+    "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "lru-cache": "^6.0.0",
     "make-dir": "^3.1.0",
@@ -166,7 +168,12 @@
     "yargs-parser": "^21.1.1"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/cookie-parser": "^1.4.7",
+    "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
+    "@types/express-useragent": "^1.0.5",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.11.20",
     "nodemon": "^3.1.0"
   },

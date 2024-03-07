@@ -1,6 +1,6 @@
 export const Config = {
     server: {
-        port: 8000
+        port: 8000,
     },
     database: {
         mysql: {
@@ -17,5 +17,9 @@ export const Config = {
             charset: "utf8mb4_general_ci",
             connectionLimit: 1
         }
+    },
+    jwt: {
+        JWT_SECRET: "ElainaTeam",
+        JWT_TIME_LIVE: "30m"
     }
 }

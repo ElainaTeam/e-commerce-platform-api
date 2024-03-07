@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Config = void 0;
 exports.Config = {
     server: {
-        port: 8000
+        port: 8000,
     },
     database: {
         mysql: {
@@ -20,6 +20,10 @@ exports.Config = {
             charset: "utf8mb4_general_ci",
             connectionLimit: 1
         }
+    },
+    jwt: {
+        JWT_SECRET: "ElainaTeam",
+        JWT_TIME_LIVE: "30m"
     }
 };
 //# sourceMappingURL=config.js.map
