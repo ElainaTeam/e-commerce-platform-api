@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt'
 import prisma from '../../../../utils/databases/prisma'
 import jwt from 'jsonwebtoken'
 import { Config } from '../../../../static/config'
-
+import functions from '../../../../utils/functions/index'
 const router = express.Router();
 router.get('/state', async (req, res) => {
 
@@ -18,6 +18,8 @@ router.get('/state', async (req, res) => {
 router.get('/callback', async (req, res) => {
     // oauth2 login
 });
+router.post('/revoke', async (req, res) => {
+})
 router.post('/callback', async (req, res) => {
     if (!req.body.state) return res.json({ code: 400, msgCode: 'a-u-100' });
     const findLoginState: any = await prisma.login_states?.findMany({
@@ -79,9 +81,7 @@ router.post('/callback', async (req, res) => {
                 next_step: ''
             }
         });
-        // update the status of the state is finished and start jwt
-        // data is going to contain an object, it's including user obj and state
-        const token = jwt.sign(data.user.id, Config.jwt.JWT_SECRET, { expiresIn: Config.jwt.JWT_TIME_LIVE })
+        const token = jwt.sign(data.user.id, `${process.env.JWT_SECRET}` ,{ expiresIn: process.env.JWT_TIME_LIVE})
         return res.json({ code: 200, msgCode: 'a-u-200', token });
     }
 });
@@ -92,8 +92,19 @@ router.post('/register', async (req, res) => {
             username: req.body.username
         }
     });
-    bcrypt.hash(req.body.password, 10, function (err, hash) {
-        console.log(hash)
+    if (findUserByUsername) return res.json({ code: 400, msgCode: 'a-u-410' }); //username esixt
+    
+    bcrypt.hash(req.body.password, 10, async function (err, hash) {
+        return await prisma.users.update({
+            where: {
+                id: functions.system.createSnowflakeId().toString()
+            },
+            data: {
+                username: req.body.username,
+                hashed_password: hash,
+                created_at: Date.now()
+            }
+        })
     });
 });
 export default router

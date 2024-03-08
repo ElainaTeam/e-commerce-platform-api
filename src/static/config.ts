@@ -18,8 +18,4 @@ export const Config = {
 			connectionLimit: 1,
 		},
 	},
-	jwt: {
-		JWT_SECRET: "ElainaTeam",
-		JWT_TIME_LIVE: "30m",
-	},
 };

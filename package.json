@@ -110,6 +110,7 @@
     "negotiator": "^0.6.3",
     "node-addon-api": "^5.1.0",
     "node-fetch": "^2.7.0",
+    "nodejs-snowflake": "^2.0.1",
     "nopt": "^5.0.0",
     "normalize-path": "^3.0.0",
     "npmlog": "^5.0.1",
