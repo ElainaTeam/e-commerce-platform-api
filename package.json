@@ -3,6 +3,12 @@
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
+  "scripts": {
+    "build": "npx tsc",
+    "start": "npx prisma generate --schema=./src/prisma/schema.prisma && npm run build && node dist/index.js",
+    "dev": "npx prisma generate && concurrently \"npx tsc --watch\" \"nodemon --env-file=.env -q dist/index.js\"",
+    "dev1": "nodemon -w src/ -x tsx src/index.ts"
+  },
   "dependencies": {
     "@prisma/client": "^5.10.2",
     "abbrev": "^1.1.1",
@@ -151,6 +157,7 @@
     "tr46": "^0.0.3",
     "tree-kill": "^1.2.2",
     "tslib": "^2.6.2",
+    "tsx": "^4.7.1",
     "type-is": "^1.6.18",
     "undefsafe": "^2.0.5",
     "unpipe": "^1.0.0",
@@ -176,11 +183,6 @@
     "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20.11.20",
     "nodemon": "^3.1.0"
-  },
-  "scripts": {
-    "build": "npx tsc",
-    "start": "npx prisma generate --schema=./src/prisma/schema.prisma && npm run build && node dist/index.js",
-    "dev": "npx prisma generate --schema=./src/prisma/schema.prisma && concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\""
   },
   "keywords": [],
   "author": "",
