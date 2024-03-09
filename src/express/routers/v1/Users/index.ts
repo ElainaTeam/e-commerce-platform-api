@@ -1,7 +1,6 @@
 import express from 'express'
 const router = express.Router()
 import prisma from '../../../../utils/databases/prisma'
-
 router.get("/@me", (req, res) => {
     return res.json({
         code: 200,

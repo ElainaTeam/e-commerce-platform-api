@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 
 export default class Auth {
 	public static getUser(req: Request, res: Response, next: NextFunction) {
+		req.user = null;
 		const authHeader : any = req.headers["authorization"] || req.headers["Authorization"];
 		const token = authHeader && authHeader.split(" ")[1];
 
