@@ -26,7 +26,8 @@ router.get('/:id', async(req,res) => {
             id: user.id,
             username: user.username,
             email: user.email,
-            create_at: user.created_at
+            create_at: user.created_at,
+            flags: user.flags
         }
     })
 })

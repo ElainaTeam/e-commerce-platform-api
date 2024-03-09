@@ -11,6 +11,7 @@ model users {
   username                String
   hashed_password         String
   created_at              String
+  flags                   String
 }
 model login_states {
   id                      String      @unique @db.VarChar(255)
@@ -30,4 +31,10 @@ model user_sessions {
   agent                   String      @unique @db.VarChar(255)
   platform                String      @unique @db.VarChar(255)
   ip                      String      @unique @db.VarChar(255)
+}
+model shop_permissions {
+  id                      String      @unique @db.VarChar(255)
+  user_id                 String      @unique @db.VarChar(255)
+  shop_id                 String      @unique @db.VarChar(255)
+  flags	                  String      @unique @db.VarChar(255)
 }

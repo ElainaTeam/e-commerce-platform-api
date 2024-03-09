@@ -95,7 +95,7 @@ router.post('/register', async (req, res) => {
     if (findUserByUsername) return res.json({ code: 400, msgCode: 'a-u-410' }); //username esixt
     
     bcrypt.hash(req.body.password, 10, async function (err, hash) {
-        return await prisma.users.update({
+        await prisma.users.update({
             where: {
                 id: functions.system.createSnowflakeId().toString()
             },
@@ -104,6 +104,10 @@ router.post('/register', async (req, res) => {
                 hashed_password: hash,
                 created_at: Date.now().toString()
             }
+        });
+        return res.json({
+            code: 200,
+            msgCode: 'a-u-200'
         })
     });
 });

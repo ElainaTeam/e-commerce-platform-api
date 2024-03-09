@@ -10,8 +10,10 @@ export default class Auth {
 		if (!authHeader || !token) return next();
 
 		jwt.verify(token, String(process.env.JWT_SECRET), (err: any, user: any) => {
-			if (err) return next(err);
+			if (err || !user) return next(err);
 			req.user = user;
+			const flags = JSON.parse("[" + user.flags.replace('[', '').replace(']', '') + "]");
+			req.user.flags = flags;
 			next();
 		});
 	}
