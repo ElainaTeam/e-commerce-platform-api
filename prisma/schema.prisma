@@ -18,6 +18,7 @@ model login_states {
   user_id                 String      @unique @db.VarChar(255)
   create_at               String      @unique @db.VarChar(255)
   state                   String      @unique @db.VarChar(255)
+  type                    String      @unique @db.VarChar(255)
   platform                String      @unique @db.VarChar(255)
   next_step               String      @unique @db.VarChar(255)
   status                  String      @unique @db.VarChar(255)
