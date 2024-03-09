@@ -25,20 +25,51 @@ router.post('/state', async (req, res) => {
     });
     return res.json({code: 200, msgCode: 'a-a-200', state})
 });
-/**
- *  payload JWT TEST {
-    "username": "Peter Tuan Anh",
-    "email": "petertuananh@hotmail.com",
-    "iat": 1516239022
-    }
- */
 router.get('/callback', async (req, res) => {
     // oauth2 login
 });
 router.post('/revoke', async (req, res) => {
-})
+});
+router.post('/token', async (req, res) => {
+    if (req.body.refresh_token) {
+        jwt.verify(req.body.refresh_token, `${process.env.JWT_REFRESH_SECRET}`, async function(err : any, decoded : any) {
+            if (decoded.id) {
+                const findUserSession: any = await prisma.user_sessions?.findFirst({
+                    where: {
+                        refresh_token: req.body.refresh_token
+                    }
+                });
+                if (!findUserSession) return res.json({ code: 400, msgCode: 'a-a-401' });
+                const access_token = await jwt.sign({id: findUserSession.user_id}, `${process.env.JWT_ACCESS_SECRET}`, {
+                    expiresIn: ms(`${process.env.JWT_ACCESS_TIME_LIVE}`)
+                });
+                const refresh_token = await jwt.sign({id: findUserSession.user_id}, `${process.env.JWT_REFRESH_SECRET}`, {
+                    expiresIn: ms(`${process.env.JWT_REFRESH_TIME_LIVE}`)
+                });
+                await prisma.user_sessions?.update({
+                    where: {
+                        refresh_token: req.body.refresh_token
+                    },
+                    data: {
+                        access_token,
+                        refresh_token,
+                        expire_at: (Date.now() + ms('1h')).toString()
+                    }
+                });
+                return res.json({
+                    code: 200,
+                    msgCode: 'a-a-200',
+                    access_token,
+                    refresh_token
+                });
+            }
+            return res.json({ code: 400, msgCode: 'a-a-404' });
+        });
+    } else {
+        return res.json({ code: 400, msgCode: 'a-u-400' });
+    }
+});
 router.post('/callback', async (req, res) => {
-    
     if (!req.body.state) return res.json({ code: 400, msgCode: 'a-u-100' });
 
     const findLoginState: any = await prisma.login_states?.findFirst({
@@ -71,7 +102,7 @@ router.post('/callback', async (req, res) => {
             });
             if (findUserByEmail) user = findUserByEmail;
             if (!user) return res.json({ code: 400, msgCode: 'a-u-404' });
-
+            
             bcrypt.compare(req.body.password, user.hashed_password, async function (err, isTrue) {
                 if (isTrue) {
                     await prisma.login_states?.update({
@@ -124,9 +155,24 @@ router.post('/callback', async (req, res) => {
         const refresh_token = await jwt.sign({id: data.user.id}, `${process.env.JWT_REFRESH_SECRET}`, {
             expiresIn: ms(`${process.env.JWT_REFRESH_TIME_LIVE}`)//thử xem // đc kìa yep
         });
+        await prisma.user_sessions.create({
+            data: {
+                id: functions.system.createSnowflakeId(),
+                create_at: Date.now().toString(),
+                create_by: data.user.id,
+                user_id: data.user.id,
+                expire_at: (Date.now() + ms('1h')).toString(),
+                state: req.body.state,
+                access_token,
+                refresh_token,
+                agent: req.useragent?.source,
+                platform: req.useragent?.platform,
+                ip: ''
+            }
+        })
         return res.json({
             code: 200,
-            msgCode: 'a-u-200',
+            msgCode: 'a-a-200',
             access_token,
             refresh_token
         });
