@@ -1,6 +1,7 @@
 import express, { Router } from "express";
 import Users from "./Users";
-import Product from "./Product";
+import Shop from "./Shop";
+import Product from "./Products";
 import NewsFeed from "./NewsFeed";
 import Admin from "./Admin";
 import Payment from "./Payment";
@@ -15,6 +16,7 @@ router.get("/", async (req, res) => {
 	return res.status(200).json({ code: 200, state: "🟢 Online" });
 });
 router.use("/Users", functions.express.auth.ensureAuthenticated, Users);
+router.use("/shop", Shop);
 router.use("/product", Product);
 router.use("/newsfeed", NewsFeed);
 router.use("/admin", functions.express.auth.ensureAuthenticated, Admin);
