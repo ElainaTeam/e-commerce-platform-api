@@ -14,7 +14,7 @@ router.get('/:id', async(req,res) => {
         where: {
             id: req.params.id
         },
-    })
+    });
     if(!user) return res.status(404).json({
         code: 404,
         msgCode: 'a-u-404'

@@ -15,37 +15,37 @@ export = {
     },
     ensureUserIsShopOwner: async function(req: any, res: any, next: any) {
         if (!req.user) return res.json({code: 403, msgCode: 'a-403'});
-        const userShopPermit = await prisma.shop_permissions.findFirst({
+        const userShopPermit : any = await prisma.shop_permissions.findFirst({
             where: {
                 user_id: req.user.id,
                 shop_id: req.params.shop_id
             }
         });
-		const flags = JSON.parse("[" + userShopPermit?.flags.replace('[', '').replace(']', '') + "]");
+		const flags = JSON.parse("[" + userShopPermit?.flags.replace('[', '').replace(']', '').replaceAll(`'`, `"`).replaceAll('`', `"`) + "]");
         if (!req.user.includes('admin') && !flags.includes('owner')) return res.json({code: 403, msgCode: 'a-403'});
         return next();
     },
     ensureUserIsShopAdministrator: async function(req: any, res: any, next: any) {
         if (!req.user) return res.json({code: 403, msgCode: 'a-403'});
-        const userShopPermit = await prisma.shop_permissions.findFirst({
+        const userShopPermit : any = await prisma.shop_permissions.findFirst({
             where: {
                 user_id: req.user.id,
                 shop_id: req.params.shop_id
             }
         });
-		const flags = JSON.parse("[" + userShopPermit?.flags.replace('[', '').replace(']', '') + "]");
+		const flags = JSON.parse("[" + userShopPermit?.flags.replace('[', '').replace(']', '').replaceAll(`'`, `"`).replaceAll('`', `"`) + "]");
         if (!req.user.includes('admin') && !flags.includes('admin')) return res.json({code: 403, msgCode: 'a-403'});
         return next();
     },
     ensureUserIsShopModerator: async function(req: any, res: any, next: any) {
         if (!req.user) return res.json({code: 403, msgCode: 'a-403'});
-        const userShopPermit = await prisma.shop_permissions.findFirst({
+        const userShopPermit : any = await prisma.shop_permissions.findFirst({
             where: {
                 user_id: req.user.id,
                 shop_id: req.params.shop_id
             }
         });
-		const flags = JSON.parse("[" + userShopPermit?.flags.replace('[', '').replace(']', '') + "]");
+		const flags = JSON.parse("[" + userShopPermit?.flags.replace('[', '').replace(']', '').replaceAll(`'`, `"`).replaceAll('`', `"`) + "]");
         if (!req.user.includes('admin') && !flags.includes('mod')) return res.json({code: 403, msgCode: 'a-403'});
         return next();
     },
