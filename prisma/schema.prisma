@@ -10,7 +10,7 @@ model users {
   email                   String      @unique(map: "email") @db.VarChar(255)
   username                String
   hashed_password         String
-  created_at              String
+  create_at               String
   flags                   String
 }
 model login_states {

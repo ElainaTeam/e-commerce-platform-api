@@ -86,8 +86,8 @@ router.post('/callback', async (req, res) => {
     }
 });
 router.post('/register', async (req, res) => {
-    if (!req.body.username || !req.body.password) return res.json({ code: 400, msgCode: 'a-u-400' });
-    const findUserByUsername = await prisma.users?.findMany({
+    if (!req.body.email || !req.body.username || !req.body.password) return res.json({ code: 400, msgCode: 'a-u-400', detail: 'email' });
+    const findUserByUsername = await prisma.users?.findFirst({
         where: {
             username: req.body.username
         }
@@ -95,14 +95,14 @@ router.post('/register', async (req, res) => {
     if (findUserByUsername) return res.json({ code: 400, msgCode: 'a-u-410' }); //username esixt
     
     bcrypt.hash(req.body.password, 10, async function (err, hash) {
-        await prisma.users.update({
-            where: {
-                id: functions.system.createSnowflakeId().toString()
-            },
+        await prisma.users.create({
             data: {
+                id: functions.system.createSnowflakeId().toString(),
                 username: req.body.username,
                 hashed_password: hash,
-                created_at: Date.now().toString()
+                create_at: Date.now().toString(),
+                email: req.body.email,
+                flags: "['member']"
             }
         });
         return res.json({
