@@ -46,7 +46,7 @@ export = {
             }
         });
 		const flags = JSON.parse("[" + userShopPermit?.flags.replace('[', '').replace(']', '').replaceAll(`'`, `"`).replaceAll('`', `"`) + "]");
-        if (!req.user.includes('admin') && !flags.includes('mod')) return res.json({code: 403, msgCode: 'a-403'});
+        if (!req.user.includes('admin') && !flags.includes('admin') && !flags.includes('mod')) return res.json({code: 403, msgCode: 'a-403'});
         return next();
     },
     forwardAuthenticated: async function() {
