@@ -16,8 +16,8 @@ router.get("/", async (req, res) => {
 	return res.status(200).json({ code: 200, state: "🟢 Online" });
 });
 router.use("/Users", functions.express.auth.ensureAuthenticated, Users);
-router.use("/shops", functions.express.auth.ensureAuthenticated, Shops);
-router.use("/product", Products);
+router.use("/shops", Shops);
+router.use("/products", Products);
 router.use("/newsfeed", NewsFeed);
 router.use("/admin", functions.express.auth.ensureAuthenticated, Admin);
 router.use("/payment", functions.express.auth.ensureAuthenticated, Payment);

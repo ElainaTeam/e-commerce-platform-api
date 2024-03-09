@@ -3,8 +3,44 @@ import functions from '../../../../utils/functions/index'
 
 import express from 'express'
 const router = express.Router()
-
-router.patch('/:shop_id', functions.express.auth.ensureUserIsShopAdministrator, async (req, res) => {
+router.get('/:shop_id/products/full', functions.express.auth.ensureAuthenticated, functions.express.auth.ensureUserIsShopModerator, async (req, res) => {
+})
+router.get('/:shop_id/products', async (req, res) => {
+    
+})
+router.get('/:shop_id/full', functions.express.auth.ensureAuthenticated, functions.express.auth.ensureUserIsShopModerator, async (req, res) => {
+    const shop : any = await prisma.shops.findFirst({
+        where: {
+            id: req.params.shop_id
+        }
+    });
+    return res.json({
+        code: 200,
+        msgCode: 'a-s-200',
+        shop
+    });
+});
+router.get('/:shop_id', async (req, res) => {
+    const shop : any = await prisma.shops.findFirst({
+        where: {
+            id: req.params.shop_id
+        }
+    });
+    return res.json({
+        code: 200,
+        msgCode: 'a-s-200',
+        shop: {
+            id: shop.id,
+            username: shop.username,
+            name: shop.name,
+            icon_name: shop.icon_name,
+            banner_name: shop.banner_name,
+            long_description: shop.long_description,
+            short_description: shop.short_description
+        }
+    });
+});
+router.patch('/:shop_id', functions.express.auth.ensureAuthenticated, functions.express.auth.ensureUserIsShopAdministrator, async (req, res) => {
     const objKeys: any = Object.keys(req.body);
     if (objKeys.some((r: any) => ['id', 'create_at', 'create_by'].includes(r))) return res.json({ code: 400, msgCode: 'a-s-403' });
     if (objKeys.includes('permission')) {
@@ -58,7 +94,7 @@ router.patch('/:shop_id', functions.express.auth.ensureUserIsShopAdministrator, 
     }
 })
 
-router.put('/', async (req, res) => {
+router.put('/', functions.express.auth.ensureAuthenticated, async (req, res) => {
     if (!req.body.username) return res.json({ code: 400, msgCode: 'a-s-400', target: 'username' });
     if (!req.body.name) return res.json({ code: 400, msgCode: 'a-s-400', target: 'name' });
     const findShopByUsername = await prisma.shops.findFirst({

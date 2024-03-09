@@ -3,15 +3,15 @@ export = {
     // This stuff will ensure that logged in to a valid credential
     ensureAuthenticated: async function(req: any, res: any, next: any) {
         if (!req.user) return res.json({code: 401, msgCode: 'a-401'});
-        return next();
+        return next(req);
     },
     ensureUserIsGlobalAdministrator: async function(req: any, res: any, next: any) {
         if (!req.user || !req.user.flags.includes('admin')) return res.json({code: 403, msgCode: 'a-403'});
-        return next();
+        return next(req);
     },
     ensureUserIsGlobalModerator: async function(req: any, res: any, next: any) {
         if (!req.user || (!req.user.flags.includes('mod') && !req.user.flags.includes('admin'))) return res.json({code: 403, msgCode: 'a-403'});
-        return next();
+        return next(req);
     },
     ensureUserIsShopOwner: async function(req: any, res: any, next: any) {
         if (!req.user) return res.json({code: 403, msgCode: 'a-403'});
@@ -29,7 +29,7 @@ export = {
         });
 		const flags = JSON.parse("[" + userShopPermit?.flags.replace('[', '').replace(']', '').replaceAll(`'`, `"`).replaceAll('`', `"`) + "]");
         if (!req.user.flags.includes('admin') && !flags.includes('owner')) return res.json({code: 403, msgCode: 'a-403'});
-        return next();
+        return next(req);
     },
     ensureUserIsShopAdministrator: async function(req: any, res: any, next: any) {
         if (!req.user) return res.json({code: 403, msgCode: 'a-403'});
@@ -47,7 +47,7 @@ export = {
         });
 		const flags = JSON.parse("[" + userShopPermit?.flags.replace('[', '').replace(']', '').replaceAll(`'`, `"`).replaceAll('`', `"`) + "]");
         if (!req.user.flags.includes('admin') && !flags.includes('owner') && !flags.includes('admin')) return res.json({code: 403, msgCode: 'a-403'});
-        return next();
+        return next(req);
     },
     ensureUserIsShopModerator: async function(req: any, res: any, next: any) {
         if (!req.user) return res.json({code: 403, msgCode: 'a-403'});
@@ -65,7 +65,7 @@ export = {
         });
 		const flags = JSON.parse("[" + userShopPermit?.flags.replace('[', '').replace(']', '').replaceAll(`'`, `"`).replaceAll('`', `"`) + "]");
         if (!req.user.flags.includes('admin') && !flags.includes('owner') && !flags.includes('admin') && !flags.includes('mod')) return res.json({code: 403, msgCode: 'a-403'});
-        return next();
+        return next(req);
     },
     forwardAuthenticated: async function() {
         
