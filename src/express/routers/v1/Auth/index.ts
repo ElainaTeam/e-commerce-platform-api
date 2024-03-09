@@ -102,7 +102,7 @@ router.post('/register', async (req, res) => {
             data: {
                 username: req.body.username,
                 hashed_password: hash,
-                created_at: Date.now()
+                created_at: Date.now().toString()
             }
         })
     });
