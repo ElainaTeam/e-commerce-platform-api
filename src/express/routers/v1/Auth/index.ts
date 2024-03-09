@@ -29,11 +29,39 @@ router.get('/callback', async (req, res) => {
     // oauth2 login
 });
 router.post('/revoke', async (req, res) => {
+    if (req.body.access_token) {
+        jwt.verify(req.body.access_token, `${process.env.JWT_ACCESS_SECRET}`, async function(err : any, decoded : any) {
+            if (decoded?.id) {
+                const findUserSession: any = await prisma.user_sessions?.findFirst({
+                    where: {
+                        access_token: req.body.access_token
+                    }
+                });
+                if (!findUserSession) return res.json({ code: 400, msgCode: 'a-a-401' });
+
+                await prisma.user_sessions?.update({
+                    where: {
+                        access_token: req.body.access_token
+                    },
+                    data: {
+                        expire_at: Date.now().toString()
+                    }
+                });
+                return res.json({
+                    code: 200,
+                    msgCode: 'a-a-200',
+                });
+            }
+            return res.json({ code: 400, msgCode: 'a-a-404' });
+        });
+    } else {
+        return res.json({ code: 400, msgCode: 'a-u-400' });
+    }
 });
 router.post('/token', async (req, res) => {
     if (req.body.refresh_token) {
         jwt.verify(req.body.refresh_token, `${process.env.JWT_REFRESH_SECRET}`, async function(err : any, decoded : any) {
-            if (decoded.id) {
+            if (decoded?.id) {
                 const findUserSession: any = await prisma.user_sessions?.findFirst({
                     where: {
                         refresh_token: req.body.refresh_token
