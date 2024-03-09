@@ -13,6 +13,17 @@ model users {
   created_at               String
   flags                   String
 }
+model shops {
+  id                      String      @unique @db.VarChar(255)
+  username                String      @unique @db.VarChar(255)
+  name                    String      @unique @db.VarChar(255)
+  create_at               String      @unique @db.VarChar(255)
+  create_by               String      @unique @db.VarChar(255)
+  icon_name               String      @unique @db.VarChar(255)
+  banner_name             String      @unique @db.VarChar(255)
+  short_description       String      @unique @db.VarChar(255)
+  long_description        String      @unique @db.VarChar(255)
+}
 model login_states {
   id                      String      @unique @db.VarChar(255)
   user_id                 String      @unique @db.VarChar(255)

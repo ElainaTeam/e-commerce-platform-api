@@ -1,0 +1,95 @@
+import prisma from '../../../../utils/databases/prisma';
+import functions from '../../../../utils/functions/index'
+
+import express from 'express'
+const router = express.Router()
+
+router.patch('/:shop_id', functions.express.auth.ensureUserIsShopAdministrator, async (req, res) => {
+    const objKeys: any = Object.keys(req.body);
+    if (objKeys.some((r: any) => ['id', 'create_at', 'create_by'].includes(r))) return res.json({ code: 400, msgCode: 'a-s-403' });
+    if (objKeys.includes('permission')) {
+        if (req.body.permission.state == 'passOwner') {
+
+        } else {
+            if (!['admin', 'mod'].includes(req.body.permission.scope)) return res.json({ code: 400, msgCode: 'a-s-400' });
+            switch (req.body.permission.state) {
+                case 'add':
+                    await prisma.shop_permissions.create({
+                        data: {
+                            id: functions.system.createSnowflakeId(),
+                            user_id: req.body.permission.user_id,
+                            shop_id: req.params.shop_id,
+                            flags: `["${req.body.permission.scope}"]`
+                        }
+                    });
+                    return res.json({code: 200, msgCode: 200});
+                    break;
+                case 'revoke':
+                    await prisma.shop_permissions.delete({
+                        where: {
+                            user_id: req.body.permission.user_id,
+                            shop_id: req.params.shop_id
+                        }
+                    });
+                    return res.json({code: 200, msgCode: 200});
+                    break;
+                case 'change':
+                    await prisma.shop_permissions.update({
+                        where: {
+                            user_id: req.body.permission.user_id,
+                            shop_id: req.params.shop_id
+                        },
+                        data: {
+                            flags: `["${req.body.permission.scope}"]`
+                        }
+                    });
+                    return res.json({code: 200, msgCode: 200});
+                    break;
+            }
+        }
+    } else {
+        await prisma.shops.update({
+            where: {
+                id: req.params.shop_id
+            },
+            data: req.body
+        });
+        return res.json({code: 200, msgCode: 200});
+    }
+})
+
+router.put('/', async (req, res) => {
+    if (!req.body.username) return res.json({ code: 400, msgCode: 'a-s-400', target: 'username' });
+    if (!req.body.name) return res.json({ code: 400, msgCode: 'a-s-400', target: 'name' });
+    const findShopByUsername = await prisma.shops.findFirst({
+        where: {
+            username: req.body.username
+        }
+    });
+    if (findShopByUsername) return res.json({ code: 400, msgCode: 'a-s-400', target: 'username' });
+    const shop_id = functions.system.createSnowflakeId();
+    await prisma.shops.create({
+        data: {
+            id: shop_id,
+            username: req.body.username,
+            name: req.body.name,
+            create_at: String(Date.now()),
+            create_by: req.user.id,
+            icon_name: '',
+            banner_name: '',
+            short_description: '',
+            long_description: ''
+        }
+    });
+    await prisma.shop_permissions.create({
+        data: {
+            id: functions.system.createSnowflakeId(),
+            user_id: req.user.id,
+            shop_id,
+            flags: '["owner"]'
+        }
+    });
+    return res.json({ code: 200, msgCode: 'a-s-200', shop_id });
+})
+
+export default router
