@@ -7,7 +7,8 @@ import Admin from "./Admin";
 import Payment from "./Payment";
 import Oauth2 from "./Oauth2";
 import Auth from "./Auth/index";
-import functions from '../../../utils/functions/index'
+import Forums from "./Forums/index";
+import functions from "../../../utils/functions/index";
 
 const router = express.Router();
 
@@ -19,6 +20,7 @@ router.use("/Users", functions.express.auth.ensureAuthenticated, Users);
 router.use("/shops", Shops);
 router.use("/products", Products);
 router.use("/newsfeed", NewsFeed);
+router.use("/forums", Forums);
 router.use("/admin", functions.express.auth.ensureAuthenticated, Admin);
 router.use("/payment", functions.express.auth.ensureAuthenticated, Payment);
 router.use("/oauth2", functions.express.auth.ensureAuthenticated, Oauth2);

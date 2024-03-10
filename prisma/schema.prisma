@@ -5,15 +5,17 @@ datasource db {
 generator client {
   provider = "prisma-client-js"
 }
-model users {
+model Users {
   id                      String      @unique @db.VarChar(255)
   email                   String      @unique(map: "email") @db.VarChar(255)
   username                String
   hashed_password         String
-  created_at               String
+  create_at              String
   flags                   String
+  posts                   Forums[]
+  comments                Comments[]
 }
-model shops {
+model Shops {
   id                      String      @unique @db.VarChar(255)
   username                String      @unique @db.VarChar(255)
   name                    String      @unique @db.VarChar(255)
@@ -36,8 +38,8 @@ model login_states {
 }
 model user_sessions {
   id                      String      @unique @db.VarChar(255)
-  created_at              String     @unique @db.VarChar(255)
-  created_by              String     @unique @db.VarChar(255)
+  create_at              String     @unique @db.VarChar(255)
+  create_by              String     @unique @db.VarChar(255)
   expire_at               String      @unique @db.VarChar(255)
   user_id                 String      @unique @db.VarChar(255)
   state                   String      @unique @db.VarChar(255)
@@ -52,4 +54,36 @@ model shop_permissions {
   user_id                 String      @unique @db.VarChar(255)
   shop_id                 String      @unique @db.VarChar(255)
   flags	                  String      @unique @db.VarChar(255)
+}
+
+model Comments {
+  id                      String      @unique @db.VarChar(255)
+  content                 String
+  user                    Users       @relation(fields: [userId], references: [id])
+  userId                  String
+  forumId                 String
+  forums                  Forums      @relation(fields: [forumId], references: [id])
+  created_at               DateTime    @default(now())
+  updated_at              DateTime    @updatedAt
+}
+
+model Topics {
+  id                      String      @unique @db.VarChar(255)
+  title                   String      @unique @db.VarChar(255)
+  forums                  Forums[]
+}
+
+model Forums {
+  id                      String      @unique @db.VarChar(255)
+  title                   String
+  image                   String?      
+  content                 String      
+  created_at               DateTime    @default(now())
+  updated_at              DateTime    @updatedAt
+  user                    Users       @relation(fields: [userId], references: [id])
+  userId                  String     
+  topicId                 String
+  topics                  Topics      @relation(fields: [topicId], references: [id])   
+  comments                Comments[]
+  likes                   Int         @default(0)
 }
