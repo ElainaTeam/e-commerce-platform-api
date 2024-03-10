@@ -16,6 +16,14 @@ export default class Auth {
 					id: userToken.id
 				}
 			});
+			if (!user) return next(err);
+			const userSession : any = await prisma.user_sessions?.findFirst({
+				where: {
+					user_id: userToken.id,
+					access_token: token
+				}
+			});
+			if (!userSession || (userSession.expire_at < Date.now())) return next(err);
 			req.user = user;
 			const flags = JSON.parse("[" + user.flags.replace('[', '').replace(']', '').replaceAll(`'`, `"`).replaceAll('`', `"`) + "]");
 			req.user.flags = flags;
