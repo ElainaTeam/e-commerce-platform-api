@@ -4,6 +4,19 @@ import functions from '../../../../utils/functions/index'
 import express from 'express'
 const router = express.Router()
 router.get('/:shop_id/products/full', functions.express.auth.ensureAuthenticated, functions.express.auth.ensureUserIsShopModerator, async (req, res) => {
+    const products : any = await prisma.products.findMany({
+        where: {
+            shop_id: req.params.shop_id
+        }
+    });
+    return res.json({
+        code: 200,
+        msgCode: 'a-s-200',
+        products
+    });
+});
+router.put('/:shop_id/products', async (req, res) => {
+
 })
 router.get('/:shop_id/products', async (req, res) => {
     const products : any = await prisma.products.findMany({
@@ -63,7 +76,7 @@ router.get('/:shop_id', async (req, res) => {
         }
     });
 });
-router.patch('/:shop_id', functions.express.auth.ensureAuthenticated, functions.express.auth.ensureUserIsShopAdministrator, async (req, res) => {
+router.patch('/:shop_id', functions.express.auth.ensureAuthenticated, functions.express.auth.ensureUserIsShopOwner, async (req, res) => {
     const objKeys: any = Object.keys(req.body);
     if (objKeys.some((r: any) => ['id', 'create_at', 'create_by'].includes(r))) return res.json({ code: 400, msgCode: 'a-s-403' });
     if (objKeys.includes('permission')) {
