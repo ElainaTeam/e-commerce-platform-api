@@ -183,6 +183,7 @@ router.post('/callback', async (req, res) => {
         const refresh_token = await jwt.sign({id: data.user.id}, `${process.env.JWT_REFRESH_SECRET}`, {
             expiresIn: ms(`${process.env.JWT_REFRESH_TIME_LIVE}`)//thử xem // đc kìa yep
         });
+        const agent : any = req.useragent
         await prisma.user_sessions.create({
             data: {
                 id: functions.system.createSnowflakeId(),
@@ -193,8 +194,8 @@ router.post('/callback', async (req, res) => {
                 state: req.body.state,
                 access_token,
                 refresh_token,
-                agent: req.useragent?.source,
-                platform: req.useragent?.platform,
+                agent: agent.source,
+                platform: agent.platform,
                 ip: ''
             }
         })
