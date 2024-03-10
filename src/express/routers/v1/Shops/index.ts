@@ -3,18 +3,18 @@ import functions from '../../../../utils/functions/index'
 
 import express from 'express'
 const router = express.Router()
-router.get('/:shop_id/products/full', functions.express.auth.ensureAuthenticated, functions.express.auth.ensureUserIsShopModerator, async (req, res) => {
-    const products : any = await prisma.products.findMany({
-        where: {
-            shop_id: req.params.shop_id
-        }
-    });
-    return res.json({
-        code: 200,
-        msgCode: 'a-s-200',
-        products
-    });
-});
+// router.get('/:shop_id/products/full', functions.express.auth.ensureAuthenticated, functions.express.auth.ensureUserIsShopModerator, async (req, res) => {
+//     const products : any = await prisma.products.findMany({
+//         where: {
+//             shop_id: req.params.shop_id
+//         }
+//     });
+//     return res.json({
+//         code: 200,
+//         msgCode: 'a-s-200',
+//         products
+//     });
+// });
 router.put('/:shop_id/products', async (req, res) => {
 
 })
@@ -44,18 +44,18 @@ router.get('/:shop_id/products', async (req, res) => {
         products
     });
 })
-router.get('/:shop_id/full', functions.express.auth.ensureAuthenticated, functions.express.auth.ensureUserIsShopModerator, async (req, res) => {
-    const shop : any = await prisma.shops.findFirst({
-        where: {
-            id: req.params.shop_id
-        }
-    });
-    return res.json({
-        code: 200,
-        msgCode: 'a-s-200',
-        shop
-    });
-});
+// router.get('/:shop_id/full', functions.express.auth.ensureAuthenticated, functions.express.auth.ensureUserIsShopModerator, async (req, res) => {
+//     const shop : any = await prisma.shops.findFirst({
+//         where: {
+//             id: req.params.shop_id
+//         }
+//     });
+//     return res.json({
+//         code: 200,
+//         msgCode: 'a-s-200',
+//         shop
+//     });
+// });
 router.get('/:shop_id', async (req, res) => {
     const shop : any = await prisma.shops.findFirst({
         where: {

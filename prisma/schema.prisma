@@ -12,8 +12,8 @@ model Users {
   hashed_password         String
   create_at               String
   flags                   String
-  posts                   Forums[]
-  comments                Comments[]
+  posts                   Forum_posts[]
+  comments                Forum_post_comments[]
 }
 model Shops {
   id                      String      @unique @db.VarChar(255)
@@ -71,35 +71,44 @@ model Shop_permissions {
   flags	                  String      @unique @db.VarChar(255)
 }
 
-model Comments {
+model Forum_post_comments {
   id                      String      @unique @db.VarChar(255)
   content                 String
   user                    Users       @relation(fields: [userId], references: [id])
   userId                  String
-  forumId                 String
-  forums                  Forums      @relation(fields: [forumId], references: [id])
+  post_id                 String
+  post                    Forum_posts      @relation(fields: [forum_id], references: [id])
   created_at              DateTime    @default(now())
   updated_at              DateTime    @updatedAt
 }
-
+model Forum_post_reactions {
+  id                      String      @unique @db.VarChar(255)
+  reaction                String
+  user                    Users       @relation(fields: [userId], references: [id])
+  userId                  String
+  forum_id                String
+  forums                  Forum_posts      @relation(fields: [forum_id], references: [id])
+  created_at              DateTime    @default(now())
+  updated_at              DateTime    @updatedAt
+}
 model Topics {
   id                      String      @unique @db.VarChar(255)
   title                   String      @unique @db.VarChar(255)
-  forums                  Forums[]
+  forums                  Forum_posts[]
 }
 
-model Forums {
+model Forum_posts {
   id                      String      @unique @db.VarChar(255)
   title                   String
   image                   String?      
   content                 String      
-  created_at              DateTime    @default(now())
-  updated_at              DateTime    @updatedAt
-  user                    Users       @relation(fields: [userId], references: [id])
-  userId                  String     
-  topicId                 String
-  topics                  Topics      @relation(fields: [topicId], references: [id])   
-  comments                Comments[]
+  create_at               DateTime    @default(now())
+  update_at               DateTime    @updatedAt
+  user                    Users       @relation(fields: [user_id], references: [id])
+  user_id                 String     
+  topic_id                String
+  topics                  Topics      @relation(fields: [topic_id], references: [id])   
+  comments                Forum_post_comments[]
   likes                   Int         @default(0)
   isPublished             Boolean     @default(false)
 }
