@@ -13,7 +13,7 @@ router.post("/state", async (req, res) => {
 	const state = randomString.generate({ length: 30 });
 	await prisma.login_states.create({
 		data: {
-			id: functions.system.createSnowflakeId(),
+			id: String(functions.system.createSnowflakeId()),
 			user_id: "",
 			create_at: Date.now().toString(),
 			state: state,
