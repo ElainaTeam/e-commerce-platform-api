@@ -6,7 +6,30 @@ const router = express.Router()
 router.get('/:shop_id/products/full', functions.express.auth.ensureAuthenticated, functions.express.auth.ensureUserIsShopModerator, async (req, res) => {
 })
 router.get('/:shop_id/products', async (req, res) => {
-    
+    const products : any = await prisma.products.findMany({
+        select: {
+            id: true,
+            shop_id: true,
+            name: true,
+            price: true,
+            type: true,
+            create_at: true,
+            flags: true,
+            icon_name: true,
+            banner_name: true,
+            images: true,
+            short_description: true,
+            long_description: true
+        },
+        where: {
+            shop_id: req.params.shop_id
+        }
+    });
+    return res.json({
+        code: 200,
+        msgCode: 'a-s-200',
+        products
+    });
 })
 router.get('/:shop_id/full', functions.express.auth.ensureAuthenticated, functions.express.auth.ensureUserIsShopModerator, async (req, res) => {
     const shop : any = await prisma.shops.findFirst({
