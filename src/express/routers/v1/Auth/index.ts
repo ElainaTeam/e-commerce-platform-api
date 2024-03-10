@@ -41,6 +41,7 @@ router.post("/revoke", async (req, res) => {
 
 				await prisma.user_sessions?.update({
 					where: {
+						id: findUserSession.id,
 						access_token: req.body.access_token,
 					},
 					data: {
@@ -76,6 +77,7 @@ router.post("/token", async (req, res) => {
 				});
 				await prisma.user_sessions?.update({
 					where: {
+						id: findUserSession.id,
 						refresh_token: req.body.refresh_token,
 					},
 					data: {
@@ -161,52 +163,52 @@ router.post("/callback", async (req, res) => {
 				}
 			});
 
-            break;
-        case '2fa':
-            break;
-        default:
-            break;
-    }
-    async function createLoginSession(data: any) {
-        await prisma.login_states?.update({
-            where: {
+			break;
+		case "2fa":
+			break;
+		default:
+			break;
+	}
+	async function createLoginSession(data: any) {
+		await prisma.login_states?.update({
+			where: {
 				id: findLoginState.id,
-                state: req.body.state
-            },
-            data: {
-                status: 'finished',
-                next_step: ''
-            }
-        });
-        const access_token = await jwt.sign({id: data.user.id}, `${process.env.JWT_ACCESS_SECRET}`, {
-            expiresIn: ms(`${process.env.JWT_ACCESS_TIME_LIVE}`)//thử xem // đc kìa yep
-        });
-        const refresh_token = await jwt.sign({id: data.user.id}, `${process.env.JWT_REFRESH_SECRET}`, {
-            expiresIn: ms(`${process.env.JWT_REFRESH_TIME_LIVE}`)//thử xem // đc kìa yep
-        });
-        const agent : any = req.useragent
-        await prisma.User_sessions.create({
-            data: {
-                id: functions.system.createSnowflakeId(),
-                create_at: Date.now().toString(),
-                create_by: data.user.id,
-                user_id: data.user.id,
-                expire_at: (Date.now() + ms('1h')).toString(),
-                state: req.body.state,
-                access_token,
-                refresh_token,
-                agent: agent.source,
-                platform: agent.platform,
-                ip: ''
-            }
-        })
-        return res.json({
-            code: 200,
-            msgCode: 'a-a-200',
-            access_token,
-            refresh_token
-        });
-    }
+				state: req.body.state,
+			},
+			data: {
+				status: "finished",
+				next_step: "",
+			},
+		});
+		const access_token = await jwt.sign({ id: data.user.id }, `${process.env.JWT_ACCESS_SECRET}`, {
+			expiresIn: ms(`${process.env.JWT_ACCESS_TIME_LIVE}`), //thử xem // đc kìa yep
+		});
+		const refresh_token = await jwt.sign({ id: data.user.id }, `${process.env.JWT_REFRESH_SECRET}`, {
+			expiresIn: ms(`${process.env.JWT_REFRESH_TIME_LIVE}`), //thử xem // đc kìa yep
+		});
+		const agent: any = req.useragent;
+		await prisma.user_sessions.create({
+			data: {
+				id: functions.system.createSnowflakeId(),
+				create_at: Date.now().toString(),
+				create_by: data.user.id,
+				user_id: data.user.id,
+				expire_at: (Date.now() + ms("1h")).toString(),
+				state: req.body.state,
+				access_token,
+				refresh_token,
+				agent: agent.source,
+				platform: agent.platform,
+				ip: "",
+			},
+		});
+		return res.json({
+			code: 200,
+			msgCode: "a-a-200",
+			access_token,
+			refresh_token,
+		});
+	}
 });
 router.post("/register", async (req, res) => {
 	if (!req.body.email) return res.json({ code: 400, msgCode: "a-u-400", detail: "email" });
