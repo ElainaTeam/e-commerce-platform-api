@@ -91,7 +91,7 @@ model Forum_post_reactions {
   created_at              DateTime    @default(now())
   updated_at              DateTime    @updatedAt
 }
-model Topics {
+model Forums_topics {
   id                      String      @unique @db.VarChar(255)
   title                   String      @unique @db.VarChar(255)
   forums                  Forum_posts[]
@@ -107,7 +107,7 @@ model Forum_posts {
   user                    Users       @relation(fields: [user_id], references: [id])
   user_id                 String     
   topic_id                String
-  topics                  Topics      @relation(fields: [topic_id], references: [id])   
+  topics                  Forums_topics      @relation(fields: [topic_id], references: [id])   
   comments                Forum_post_comments[]
   likes                   Int         @default(0)
   isPublished             Boolean     @default(false)
