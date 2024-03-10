@@ -26,7 +26,7 @@ model Shops {
   short_description       String      @unique @db.VarChar(255)
   long_description        String      @unique @db.VarChar(255)
 }
-model products {
+model Products {
   id                      String      @unique @db.VarChar(255)
   shop_id                 String      @unique @db.VarChar(255)
   name                    String      @unique @db.VarChar(255)
@@ -41,7 +41,7 @@ model products {
   short_description       String      @unique @db.VarChar(255)
   long_description        String      @unique @db.VarChar(255)
 }
-model login_states {
+model Login_states {
   id                      String      @unique @db.VarChar(255)
   user_id                 String      @unique @db.VarChar(255)
   create_at               String      @unique @db.VarChar(255)
@@ -51,7 +51,7 @@ model login_states {
   next_step               String      @unique @db.VarChar(255)
   status                  String      @unique @db.VarChar(255)
 }
-model user_sessions {
+model User_sessions {
   id                      String      @unique @db.VarChar(255)
   create_at              String     @unique @db.VarChar(255)
   create_by              String     @unique @db.VarChar(255)
@@ -64,7 +64,7 @@ model user_sessions {
   platform                String      @unique @db.VarChar(255)
   ip                      String      @unique @db.VarChar(255)
 }
-model shop_permissions {
+model Shop_permissions {
   id                      String      @unique @db.VarChar(255)
   user_id                 String      @unique @db.VarChar(255)
   shop_id                 String      @unique @db.VarChar(255)

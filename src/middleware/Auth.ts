@@ -11,9 +11,9 @@ export default class Auth {
 
 		jwt.verify(token, String(process.env.JWT_ACCESS_SECRET), async (err: any, userToken: any) => {
 			if (err || !userToken) return next(err);
-			const user : any = await prisma.users?.findFirst({
+			const user : any = await prisma.users.findFirst({
 				where: {
-					id: userToken.id
+					id: String(userToken.id)
 				}
 			});
 			if (!user) return next(err);
