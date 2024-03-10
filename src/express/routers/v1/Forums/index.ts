@@ -5,6 +5,9 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
 	const allPost = await prisma.forums.findMany({
+		where: {
+			isPublished: true,
+		},
 		include: {
 			user: true,
 			comments: true,
@@ -28,9 +31,14 @@ router.post("/new", async (req, res) => {
 			title: req.body.title,
 			image: req.body.image,
 			content: req.body.content,
-			topics: req.body.topics,
-			user: req.user.id,
+			topicId: req.body.topicId,
+			userId: req.user.id,
 		},
+	});
+
+	return res.json({
+		code: 200,
+		msg: "a-u-200",
 	});
 });
 

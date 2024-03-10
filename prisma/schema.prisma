@@ -53,8 +53,8 @@ model login_states {
 }
 model user_sessions {
   id                      String      @unique @db.VarChar(255)
-  create_at              String     @unique @db.VarChar(255)
-  create_by              String     @unique @db.VarChar(255)
+  create_at               String     @unique @db.VarChar(255)
+  create_by               String     @unique @db.VarChar(255)
   expire_at               String      @unique @db.VarChar(255)
   user_id                 String      @unique @db.VarChar(255)
   state                   String      @unique @db.VarChar(255)
@@ -78,7 +78,7 @@ model Comments {
   userId                  String
   forumId                 String
   forums                  Forums      @relation(fields: [forumId], references: [id])
-  created_at               DateTime    @default(now())
+  created_at              DateTime    @default(now())
   updated_at              DateTime    @updatedAt
 }
 
@@ -93,7 +93,7 @@ model Forums {
   title                   String
   image                   String?      
   content                 String      
-  created_at               DateTime    @default(now())
+  created_at              DateTime    @default(now())
   updated_at              DateTime    @updatedAt
   user                    Users       @relation(fields: [userId], references: [id])
   userId                  String     
@@ -101,4 +101,5 @@ model Forums {
   topics                  Topics      @relation(fields: [topicId], references: [id])   
   comments                Comments[]
   likes                   Int         @default(0)
+  isPublished             Boolean     @default(false)
 }

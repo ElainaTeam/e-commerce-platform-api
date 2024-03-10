@@ -20,7 +20,7 @@ router.use("/Users", functions.express.auth.ensureAuthenticated, Users);
 router.use("/shops", Shops);
 router.use("/products", Products);
 router.use("/newsfeed", NewsFeed);
-router.use("/forums", Forums);
+router.use("/forums", functions.express.auth.ensureAuthenticated, Forums);
 router.use("/admin", functions.express.auth.ensureAuthenticated, Admin);
 router.use("/payment", functions.express.auth.ensureAuthenticated, Payment);
 router.use("/oauth2", functions.express.auth.ensureAuthenticated, Oauth2);
