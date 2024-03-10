@@ -13,12 +13,12 @@ router.post("/state", async (req, res) => {
 	const state = randomString.generate({ length: 30 });
 	await prisma.login_states.create({
 		data: {
-			id: String(functions.system.createSnowflakeId()),
+			id: functions.system.createSnowflakeId(),
 			user_id: "",
 			create_at: Date.now().toString(),
 			state: state,
 			platform: req.body.platform,
-			type: req.body.type,
+			auth_type: req.body.type,
 			next_step: "auth",
 			status: "pending",
 		},
@@ -135,6 +135,7 @@ router.post("/callback", async (req, res) => {
 				if (isTrue) {
 					await prisma.login_states?.update({
 						where: {
+							id: findLoginState.id,
 							state: req.body.state,
 						},
 						data: {
@@ -144,6 +145,7 @@ router.post("/callback", async (req, res) => {
 					if (user.flags.includes("2fa")) {
 						await prisma.login_states?.update({
 							where: {
+								id: findLoginState.id,
 								state: req.body.state,
 							},
 							data: {
@@ -168,6 +170,7 @@ router.post("/callback", async (req, res) => {
     async function createLoginSession(data: any) {
         await prisma.login_states?.update({
             where: {
+				id: findLoginState.id,
                 state: req.body.state
             },
             data: {
@@ -182,7 +185,7 @@ router.post("/callback", async (req, res) => {
             expiresIn: ms(`${process.env.JWT_REFRESH_TIME_LIVE}`)//thử xem // đc kìa yep
         });
         const agent : any = req.useragent
-        await prisma.user_sessions.create({
+        await prisma.User_sessions.create({
             data: {
                 id: functions.system.createSnowflakeId(),
                 create_at: Date.now().toString(),

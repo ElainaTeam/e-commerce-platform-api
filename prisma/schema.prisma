@@ -52,7 +52,7 @@ model Login_states {
   user_id   String @db.VarChar(255)
   create_at String @db.VarChar(255)
   state     String @db.VarChar(255)
-  type      String @db.VarChar(255)
+  auth_type String @db.VarChar(255) @default("")
   platform  String @db.VarChar(255)
   next_step String @db.VarChar(255)
   status    String @db.VarChar(255)
@@ -60,16 +60,16 @@ model Login_states {
 
 model User_sessions {
   id            String @unique @db.VarChar(255)
-  create_at     String @unique @db.VarChar(255)
-  create_by     String @unique @db.VarChar(255)
-  expire_at     String @unique @db.VarChar(255)
-  user_id       String @unique @db.VarChar(255)
-  state         String @unique @db.VarChar(255)
-  access_token  String @unique @db.VarChar(255)
-  refresh_token String @unique @db.VarChar(255)
-  agent         String @unique @db.VarChar(255)
-  platform      String @unique @db.VarChar(255)
-  ip            String @unique @db.VarChar(255)
+  create_at     String @db.VarChar(255)
+  create_by     String @db.VarChar(255)
+  expire_at     String @db.VarChar(255)
+  user_id       String @db.VarChar(255)
+  state         String @db.VarChar(255)
+  access_token  String @db.VarChar(255)
+  refresh_token String @db.VarChar(255)
+  agent         String @db.VarChar(255)
+  platform      String @db.VarChar(255)
+  ip            String @db.VarChar(255)
 }
 
 model Shop_permissions {
