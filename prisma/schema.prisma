@@ -114,8 +114,8 @@ model Forum_posts {
   content     String
   create_at   String               @db.VarChar(255)
   update_at   String               @db.VarChar(255)
-  user        Users                  @relation(fields: [user_id], references: [id])
-  user_id     String
+  user        Users                @relation(fields: [user_id], references: [id])
+  user_id     String               @db.VarChar(255)
   topics_id   String
   topics      Forums_topics          @relation(fields: [topics_id], references: [id])
   comments    Forum_post_comments[]
