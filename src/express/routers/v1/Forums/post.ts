@@ -92,7 +92,7 @@ router.post("/", async (req, res) => {
 			title: req.body.title,
 			image: req.body.image || undefined,
 			content: req.body.content,
-			topics_id: String(req.body.topics_id),
+			topics_id: `${req.body.topics_id}`,
 			user_id: req.user.id,
             create_at: Date.now().toString(),
             update_at: Date.now().toString(),
