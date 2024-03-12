@@ -100,6 +100,6 @@ router.put("/", async (req, res) => {
 			flag: "",
 		},
 	});
-	return res.json({ code: 200, msgCode: "a-f-200" });
+	return res.json({ code: 200, msgCode: "a-f-200", id: post_id });
 });
 export default router;
