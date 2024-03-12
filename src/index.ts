@@ -31,6 +31,5 @@ export default class App {
 		});
 	}
 }
-// console.log(functions.system.createSnowflakeId())
 const app2 = new App();
 app2.execute();
