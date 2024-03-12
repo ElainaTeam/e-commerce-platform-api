@@ -21,39 +21,6 @@ export default class App {
 		app.use(express.raw());
 		app.use(useragent.express());
 		app.use(cookieParser());
-		// app.use(async function (req, res, next) {
-		//     req.app = app;
-		//     app.use(cors({ origin: '*' }));
-		//     res.header("Access-Control-Allow-Origin", "*");
-		//     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-		//     // @ts-ignore
-		//     req.realIp = req.headers?.['cf-connecting-ip'];
-		//     const token =
-		//         req.headers['Authorization']?.replace('Bearer ', '') ||
-		//         req.headers['Auth']?.replace('Bearer ', '') ||
-		//         req.body.token ||
-		//         req.body.auth ||
-		//         req.query.token ||
-		//         req.query.auth;
-		//     const findToken = prisma.user_sessions.findFirst({
-		//         where: {
-		//             access_token: token
-		//         }
-		//     })
-		//     const findUser = prisma.users.findFirst({
-		//         where: {
-		//             access_token: token
-		//         }
-		//     })
-		//     if (findUser) {
-		//         req.user = findToken
-		//         return next()
-		//     } else {
-		//         req.user = null
-		//         return next()
-		//     }
-
-		// })
 		app.use("/*", AuthMiddleware.getUser);
 		app.use("/", routers);
         app.use(async function (req, res, next) {
