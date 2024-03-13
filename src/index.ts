@@ -21,6 +21,11 @@ export default class App {
 		app.use(express.raw());
 		app.use(useragent.express());
 		app.use(cookieParser());
+		app.use(async function (req: any, res, next) {
+			res.header("Access-Control-Allow-Origin", "*");
+        	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+			return next()
+		})
 		app.use("/*", AuthMiddleware.getUser);
 		app.use("/", routers);
         app.use(async function (req, res, next) {
