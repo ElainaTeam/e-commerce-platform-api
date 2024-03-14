@@ -7,6 +7,7 @@ import { Config } from "./static/config";
 import routers from "./express/routers/index";
 import prisma from "./utils/databases/prisma";
 import functions from "./utils/functions";
+import { config } from 'dotenv'
 const app = express();
 
 export default class App {
@@ -14,18 +15,25 @@ export default class App {
 	Config = Config;
 	Prisma = prisma;
 	Functions = functions;
-	constructor() {}
+	constructor() {
+		config()
+	}
 	execute() {
 		app.use(express.urlencoded({ extended: true }));
 		app.use(express.json());
 		app.use(express.raw());
 		app.use(useragent.express());
 		app.use(cookieParser());
-		app.use(async function (req: any, res, next) {
-			res.header("Access-Control-Allow-Origin", "*");
-        	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
-			return next()
-		})
+		// app.use(async function (req: any, res, next) {
+		// 	res.header("Access-Control-Allow-Origin", "*");
+        // 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+		// 	return next()
+		// })
+		app.use(cors({
+			methods: 'GET, POST, PUT, PATCH, DELETE, OPTION',
+			allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+			origin: '*'
+		}))
 		app.use("/*", AuthMiddleware.getUser);
 		app.use("/", routers);
         app.use(async function (req, res, next) {
