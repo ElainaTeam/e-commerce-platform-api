@@ -15,6 +15,7 @@ router.get("/newfeed", async (req, res) => {
 			topics: true,
 		},
 	});
+    if (allPost.length <= 0) return res.json({ code: 404, msgCode: 'a-f-404' });
     const latestPosts = allPost.filter(x => (Date.now() - parseInt(String(x.create_at))) < ms('24h'));
     const mostCommentPosts = allPost.filter(x => x.comments.length > 5 || x.comments.length > 10);
     const mostCommentReactions = allPost.filter(x => x.reactions.length > 5 || x.reactions.length > 10);
