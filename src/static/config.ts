@@ -1,6 +1,6 @@
 export const Config = {
 	server: {
-		port: 10000,
+		port: process.env.PORT,
 	},
 	database: {
 		mysql: {
