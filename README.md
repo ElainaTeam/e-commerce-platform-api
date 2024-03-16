@@ -2,40 +2,51 @@
 
 ### Admin
 > [!TIP]
-> /v1/admin/... -> ***Updating...***
+> **GET** /v1/admin/Users/**:user_id** -> ***Get user***
+> **PATCH** /v1/admin/Users/**:user_id** -> ***Updating...***
 
 ### Auth
 > [!TIP]
-> /v1/auth/register -> ***Create Account***
+> **POST** /v1/auth/callback -> ***Updating...***
+>
+> **POST** /v1/auth/register -> ***Create Account***
 > 
-> /v1/auth/state -> ***New Device State***
+> **POST** /v1/auth/state -> ***New Device State***
 > 
-> /v1/auth/token -> ***Get Access Token & Refresh Token***
+> **POST** /v1/auth/token -> ***Get Access Token & Refresh Token***
+>
+> **POST** /v1/auth/revoke -> ***Updating...***
 
 ### Forums
 > [!TIP]
-> /v1/forum/newfeed -> ***Updating...***
+> **GET** /v1/post/ -> ***Updating...***
 >
-> /v1/forum/post -> ***Updating...***
+> **POST** /v1/post/ -> ***Updating...***
+>
+> **GET** /v1/post/newfeed -> ***Notification & NewsFeed...***
+>
+> **DELETE** /v1/post/**:post_id** -> ***Updating...***
+>
+> **PATCH** /v1/post/**:post_id** -> ***Updating...***
 
 ### Oauth2
 > [!NOTE]
-> **Updating...**
+> **GET** /v1/oauth2/ -> ***Updating...***
 
 ### Payment
 > [!NOTE]
-> **Updating...**
+> **GET** /v1/payment/ -> ***Updating...***
 
 ### Products
 > [!NOTE]
-> **Updating...**
+> **GET** /v1/products/ -> ***Updating...***
 
 ### Shops
-> [!NOTE]
-> **Updating...**
+> [!TIP]
+> **PUT** /v1/shops -> ***Updating...***
 
 ### Users
 > [!TIP]
-> /users/@me -> ***Updating...*** 
+> **GET** /v1/users/@me -> ***Updating...*** 
 >
-> /users/**:id** -> ***Get user with user id***
+> **GET** /v1/users/**:id** -> ***Get user with user id***

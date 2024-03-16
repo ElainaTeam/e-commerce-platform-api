@@ -52,7 +52,7 @@ model Login_states {
   user_id   String @db.VarChar(255)
   create_at String @db.VarChar(255)
   state     String @db.VarChar(255)
-  auth_type String @db.VarChar(255) @default("")
+  auth_type String @default("") @db.VarChar(255)
   platform  String @db.VarChar(255)
   next_step String @db.VarChar(255)
   status    String @db.VarChar(255)
@@ -86,8 +86,8 @@ model Forum_post_comments {
   userId     String
   post_id    String
   post       Forum_posts @relation(fields: [post_id], references: [id])
-  created_at String    @db.VarChar(255)
-  updated_at String    @db.VarChar(255)
+  created_at String      @db.VarChar(255)
+  updated_at String      @db.VarChar(255)
 }
 
 model Forum_post_reactions {
@@ -97,33 +97,35 @@ model Forum_post_reactions {
   userId     String
   post_id    String
   posts      Forum_posts @relation(fields: [post_id], references: [id])
-  created_at String    @db.VarChar(255)
-  updated_at String    @db.VarChar(255)
+  created_at String      @db.VarChar(255)
+  updated_at String      @db.VarChar(255)
 }
 
 model Forums_topics {
-  id     String        @unique @db.VarChar(255)
-  title  String        @unique @db.VarChar(255)
-  forums Forum_posts[]
+  id            String       @unique @db.VarChar(255)
+  title         String       @unique @db.VarChar(255)
+  Forum_posts   Forum_posts? @relation(fields: [forum_postsId], references: [id])
+  forum_postsId String?      @db.VarChar(255)
 }
 
 model Forum_posts {
-  id          String                 @unique @db.VarChar(255)
-  title       String
-  image       String?
-  content     String
-  create_at   String               @db.VarChar(255)
-  update_at   String               @db.VarChar(255)
-  user        Users                @relation(fields: [user_id], references: [id])
-  user_id     String               @db.VarChar(255)
-  topics_id   String
-  topics      Forums_topics          @relation(fields: [topics_id], references: [id])
-  comments    Forum_post_comments[]
-  reactions   Forum_post_reactions[]
-  flag        String                 @default("pending")
+  id        String                 @unique @db.VarChar(255)
+  title     String
+  image     String?
+  content   String
+  create_at String                 @db.VarChar(255)
+  update_at String                 @db.VarChar(255)
+  user      Users                  @relation(fields: [user_id], references: [id])
+  user_id   String                 @db.VarChar(255)
+  topics_id String                 @db.VarChar(255)
+  topics    Forums_topics[]
+  comments  Forum_post_comments[]
+  reactions Forum_post_reactions[]
+  flag      String                 @default("pending")
 }
+
 model User_posts_seen {
-  user_id     String                 @unique @db.VarChar(255)
-  post_id     String                 @unique @db.VarChar(255)
-  see_at      String               @db.VarChar(255)
+  user_id String @unique @db.VarChar(255)
+  post_id String @unique @db.VarChar(255)
+  see_at  String @db.VarChar(255)
 }

@@ -62,6 +62,7 @@ router.get('/:shop_id', async (req, res) => {
             id: req.params.shop_id
         }
     });
+    if (!shop) return res.json({ code: 404, msgCode: 'a-s-404' });
     return res.json({
         code: 200,
         msgCode: 'a-s-200',
