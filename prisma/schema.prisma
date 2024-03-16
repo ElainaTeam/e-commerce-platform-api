@@ -11,6 +11,8 @@ model Users {
   id                   String                 @unique @db.VarChar(255)
   email                String                 @unique(map: "email") @db.VarChar(255)
   username             String
+  icon_name            String?
+  banner_name          String?
   hashed_password      String
   create_at            String
   flags                String
@@ -32,19 +34,32 @@ model Shops {
 }
 
 model Products {
-  id                String @unique @db.VarChar(255)
-  shop_id           String @unique @db.VarChar(255)
-  name              String @unique @db.VarChar(255)
-  price             String @unique @db.VarChar(255)
-  type              String @unique @db.VarChar(255)
-  flags             String @unique @db.VarChar(255)
-  images            String @unique @db.VarChar(255)
-  create_at         String @unique @db.VarChar(255)
-  create_by         String @unique @db.VarChar(255)
-  icon_name         String @unique @db.VarChar(255)
-  banner_name       String @unique @db.VarChar(255)
-  short_description String @unique @db.VarChar(255)
-  long_description  String @unique @db.VarChar(255)
+  id                String           @unique @db.VarChar(255)
+  shop_id           String           @unique @db.VarChar(255)
+  category_id       String           @unique @db.VarChar(255)
+  category          Product_category @relation(fields: [category_id], references: [id])
+  name              String           @unique @db.VarChar(255)
+  price             String           @unique @db.VarChar(255)
+  flags             String           @unique @db.VarChar(255)
+  images            String           @unique @db.VarChar(255)
+  create_at         String           @unique @db.VarChar(255)
+  create_by         String           @unique @db.VarChar(255)
+  icon_name         String           @unique @db.VarChar(255)
+  banner_name       String           @unique @db.VarChar(255)
+  short_description String           @unique @db.VarChar(255)
+  long_description  String           @unique @db.VarChar(255)
+}
+
+model Product_category {
+  id                String    @unique @db.VarChar(255)
+  create_at         String    @unique @db.VarChar(255)
+  create_by         String    @unique @db.VarChar(255)
+  icon_name         String    @unique @db.VarChar(255)
+  banner_name       String    @unique @db.VarChar(255)
+  short_description String    @unique @db.VarChar(255)
+  long_description  String    @unique @db.VarChar(255)
+  flags             String    @unique @db.VarChar(255)
+  Products          Products?
 }
 
 model Login_states {

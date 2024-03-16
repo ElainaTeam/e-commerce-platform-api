@@ -9,7 +9,15 @@ router.get("/newfeed", async (req, res) => {
 			flag: 'approved',
 		},
 		include: {
-			user: true,
+			user: {
+                select: {
+                    id: true,
+                    username: true,
+                    icon_name: true,
+                    banner_name: true,
+                    create_at: true
+                }
+            },
 			comments: true,
 			reactions: true,
 			topics: true,
@@ -35,7 +43,15 @@ router.get("/", async (req, res) => {
 			flag: 'approved',
 		},
 		include: {
-			user: true,
+			user: {
+                select: {
+                    id: true,
+                    username: true,
+                    icon_name: true,
+                    banner_name: true,
+                    create_at: true
+                }
+            },
 			comments: true,
 			topics: true,
 		},
