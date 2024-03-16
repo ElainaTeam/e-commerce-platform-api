@@ -25,7 +25,6 @@ router.get('/:shop_id/products', async (req, res) => {
             shop_id: true,
             name: true,
             price: true,
-            type: true,
             create_at: true,
             flags: true,
             icon_name: true,
