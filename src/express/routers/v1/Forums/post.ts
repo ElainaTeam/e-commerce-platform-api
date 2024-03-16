@@ -96,7 +96,7 @@ router.post("/", async (req, res) => {
 			user_id: req.user.id,
             create_at: Date.now().toString(),
             update_at: Date.now().toString(),
-            flag: ''
+            flag: 'pending'
 		},
 	});
     return res.json({code: 200, msgCode: 'a-f-200', post_id});
