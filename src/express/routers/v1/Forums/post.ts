@@ -21,10 +21,11 @@ router.get("/newfeed", async (req, res) => {
     const mostCommentReactions = allPost.filter(x => x.reactions.length > 5 || x.reactions.length > 10);
     const posts = [...latestPosts, ...mostCommentPosts, ...mostCommentReactions];
     if (posts.length < 10) {
-        for (let i = 0; i < (10 - allPost.length); i++) {
-            if (posts.includes(allPost[i])) return;
-            return posts.push(allPost[i]);
-        }
+        allPost.forEach(async (post) => {
+            if (posts.length > 10) return;
+            if (posts.includes(post)) return;
+            return posts.push(post);
+        })
     };
     return res.json({code: 200, msgCode: 'a-f-200', posts});
 })
