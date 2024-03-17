@@ -3,6 +3,9 @@ import functions from "@/utils/functions";
 import express from "express";
 const router = express.Router();
 import Post from "./post";
+import Topics from "./topic";
+
+router.use("/topics", Topics);
 router.use("/post", Post);
 
 export default router;
