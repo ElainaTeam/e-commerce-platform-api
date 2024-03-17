@@ -8,6 +8,7 @@ import Homepage from "./Homepage";
 import Oauth2 from "./Oauth2";
 import Auth from "./Auth/index";
 import Forums from "./Forums/index";
+import Topics from "./Forums/topic";
 import functions from "../../../utils/functions/index";
 
 const router = express.Router();
@@ -21,6 +22,7 @@ router.use("/shops", Shops);
 router.use("/products", Products);
 router.use("/homepage", Homepage);
 router.use("/forums", functions.express.auth.ensureAuthenticated, Forums);
+router.use("/topics", functions.express.auth.ensureAuthenticated, Topics);
 router.use("/admin", functions.express.auth.ensureAuthenticated, functions.express.auth.ensureUserIsGlobalAdministrator, Admin);
 router.use("/payment", functions.express.auth.ensureAuthenticated, Payment);
 router.use("/oauth2", functions.express.auth.ensureAuthenticated, Oauth2);
