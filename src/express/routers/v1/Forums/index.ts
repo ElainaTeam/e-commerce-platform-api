@@ -5,7 +5,7 @@ const router = express.Router();
 import Post from "./post";
 import Topics from "./topic";
 
-router.use("/topics", Topics);
 router.use("/post", Post);
+router.use("/topics", Topics);
 
 export default router;

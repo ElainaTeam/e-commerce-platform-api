@@ -138,7 +138,6 @@ model Forum_post {
   flag            String                        @default("pending")
 }
 
-
 model User_posts_seen {
   user_id String @unique @db.VarChar(255)
   post_id String @unique @db.VarChar(255)
