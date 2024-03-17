@@ -16,8 +16,8 @@ model Users {
   hashed_password      String
   create_at            String
   flags                String
-  posts                Forum_posts[]
-  comments             Forum_post_comments[]
+  posts                Forum_post[]
+  comments             Forum_post_comment[]
   Forum_post_reactions Forum_post_reactions[]
 }
 
@@ -94,13 +94,13 @@ model Shop_permissions {
   flags   String @unique @db.VarChar(255)
 }
 
-model Forum_post_comments {
+model Forum_post_comment {
   id         String      @unique @db.VarChar(255)
   content    String
   user       Users       @relation(fields: [userId], references: [id])
   userId     String
   post_id    String
-  post       Forum_posts @relation(fields: [post_id], references: [id])
+  post       Forum_post @relation(fields: [post_id], references: [id])
   created_at String      @db.VarChar(255)
   updated_at String      @db.VarChar(255)
 }
@@ -111,32 +111,31 @@ model Forum_post_reactions {
   user       Users       @relation(fields: [userId], references: [id])
   userId     String
   post_id    String
-  posts      Forum_posts @relation(fields: [post_id], references: [id])
+  posts      Forum_post @relation(fields: [post_id], references: [id])
   created_at String      @db.VarChar(255)
   updated_at String      @db.VarChar(255)
 }
 
-model Forums_topics {
-  id            String       @unique @db.VarChar(255)
+model Forum_topic {
+  id            String       @id @unique @db.VarChar(255)
   title         String       @unique @db.VarChar(255)
-  Forum_posts   Forum_posts? @relation(fields: [forum_postsId], references: [id])
-  forum_postsId String?      @db.VarChar(255)
+  description   String       @db.VarChar(255)
+  forum_posts   Forum_post[]
 }
 
-model Forum_posts {
-  id        String                 @unique @db.VarChar(255)
-  title     String
-  image     String?
-  content   String
-  create_at String                 @db.VarChar(255)
-  update_at String                 @db.VarChar(255)
-  user      Users                  @relation(fields: [user_id], references: [id])
-  user_id   String                 @db.VarChar(255)
-  topics_id String                 @db.VarChar(255)
-  topics    Forums_topics[]
-  comments  Forum_post_comments[]
-  reactions Forum_post_reactions[]
-  flag      String                 @default("pending")
+model Forum_post {
+  id              String                        @id @unique @db.VarChar(255)
+  title           String
+  image           String?
+  content         String
+  create_at       String                        @db.VarChar(255)
+  update_at       String                        @db.VarChar(255)
+  user_id         String                        @db.VarChar(255)
+  user            Users                         @relation(fields: [user_id], references: [id])      
+  forum_topics    Forum_topic[]
+  comments        Forum_post_comment[]
+  reactions       Forum_post_reactions[]
+  flag            String                        @default("pending")
 }
 
 model User_posts_seen {
