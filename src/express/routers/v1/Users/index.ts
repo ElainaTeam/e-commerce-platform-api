@@ -2,10 +2,15 @@ import express from "express";
 const router = express.Router();
 import prisma from "../../../../utils/databases/prisma";
 router.get("/@me", (req, res) => {
+	function exclude(user : any, keys : any) {
+		return Object.fromEntries(
+		  Object.entries(user).filter(([key]) => !keys.includes(key))
+		);
+	}
 	return res.json({
 		code: 200,
 		msgCode: "a-u-200",
-		user: req.user,
+		user: exclude(req.user, ['hashed_password', 'access_token']),
 	});
 });
 

@@ -2,6 +2,7 @@ import express, { Router } from "express";
 import Users from "./Users";
 import Shops from "./Shops";
 import Products from "./Products";
+import Chats from "./Chats";
 import Admin from "./Admin";
 import Payment from "./Payment";
 import Homepage from "./Homepage";
@@ -18,6 +19,7 @@ router.get("/", async (req, res) => {
 });
 router.use("/Users", functions.express.auth.ensureAuthenticated, Users);
 router.use("/shops", Shops);
+router.use("/chats", functions.express.auth.ensureAuthenticated, Chats);
 router.use("/products", Products);
 router.use("/homepage", Homepage);
 router.use("/forums", functions.express.auth.ensureAuthenticated, Forums);
