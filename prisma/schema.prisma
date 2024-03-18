@@ -27,7 +27,9 @@ model Users {
 model User_chat_permissions {
   id      String @unique @db.VarChar(255)
   user_id String @unique @db.VarChar(255)
+  chat_id String @unique @db.VarChar(255)
   user    Users  @relation(fields: [user_id], references: [id])
+  chat    Chats  @relation(fields: [chat_id], references: [id])
   permit  String @unique @db.VarChar(255)
 }
 
@@ -44,13 +46,14 @@ model User_chats {
 }
 
 model Chats {
-  id          String  @unique @db.VarChar(255)
-  name        String? @unique @db.VarChar(255)
+  id          String                  @unique @db.VarChar(255)
+  name        String?                 @unique @db.VarChar(255)
   icon_name   String?
   banner_name String?
   create_at   String
   type        String
   flags       String?
+  permission  User_chat_permissions[]
 }
 
 model Shops {
