@@ -19,7 +19,16 @@ router.put("/", async (req, res) => {
             break
         case 'group':
             if (!req.body.name) return res.json({code: 200, msgCode: 'a-c-400'});
-            
+            if (!req.body.user_id) return res.json({code: 200, msgCode: 'a-c-400'});
+            const chat_id = functions.system.createSnowflakeId();
+            await prisma.chats.create({
+                data: {
+                    id: chat_id,
+                    create_at: String(Date.now()),
+                    type: req.body.type
+                }
+            });
+            return res.json({code: 200, msgCode: 'a-c-200', chat_id});
             break
         default:
             return res.json({code: 200, msgCode: 'a-c-400'});

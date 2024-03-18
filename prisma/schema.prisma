@@ -16,10 +16,10 @@ model Users {
   hashed_password       String
   create_at             String
   flags                 String
-  Forum_posts           Forum_posts[]
-  User_posts_seen       User_posts_seen[]
+  Forum_posts           Forum_post[]
   Forum_post_comments   Forum_post_comment[]
   Forum_post_reactions  Forum_post_reactions[]
+  Forum_posts_seen      User_posts_seen[]
   Chats                 User_chats[]
   User_chat_permissions User_chat_permissions[]
 }
@@ -45,6 +45,7 @@ model User_chats {
 
 model Chats {
   id          String  @unique @db.VarChar(255)
+  name        String? @unique @db.VarChar(255)
   icon_name   String?
   banner_name String?
   create_at   String
@@ -129,38 +130,38 @@ model Shop_permissions {
 }
 
 model Forum_post_comment {
-  id         String      @unique @db.VarChar(255)
+  id         String     @unique @db.VarChar(255)
   content    String
-  user       Users       @relation(fields: [userId], references: [id])
+  user       Users      @relation(fields: [userId], references: [id])
   userId     String
   post_id    String
-  post       Forum_posts @relation(fields: [post_id], references: [id])
-  created_at String      @db.VarChar(255)
-  updated_at String      @db.VarChar(255)
-  flags      String?     @db.VarChar(255)
+  post       Forum_post @relation(fields: [post_id], references: [id])
+  created_at String     @db.VarChar(255)
+  updated_at String     @db.VarChar(255)
+  flags      String?    @db.VarChar(255)
 }
 
 model Forum_post_reactions {
-  id         String      @unique @db.VarChar(255)
+  id         String     @unique @db.VarChar(255)
   reaction   String
-  user       Users       @relation(fields: [userId], references: [id])
+  user       Users      @relation(fields: [userId], references: [id])
   userId     String
   post_id    String
-  posts      Forum_posts @relation(fields: [post_id], references: [id])
-  created_at String      @db.VarChar(255)
-  updated_at String      @db.VarChar(255)
-  flags      String?     @db.VarChar(255)
+  posts      Forum_post @relation(fields: [post_id], references: [id])
+  created_at String     @db.VarChar(255)
+  updated_at String     @db.VarChar(255)
+  flags      String?    @db.VarChar(255)
 }
 
 model Forum_topic {
-  id          String        @id @unique @db.VarChar(255)
-  title       String        @unique @db.VarChar(255)
-  description String        @db.VarChar(255)
-  forum_posts Forum_posts[]
-  flags       String?       @db.VarChar(255)
+  id          String       @id @unique @db.VarChar(255)
+  title       String       @unique @db.VarChar(255)
+  description String       @db.VarChar(255)
+  forum_posts Forum_post[]
+  flags       String?      @db.VarChar(255)
 }
 
-model Forum_posts {
+model Forum_post {
   id           String                 @id @unique @db.VarChar(255)
   title        String
   image        String?
@@ -177,10 +178,10 @@ model Forum_posts {
 }
 
 model User_posts_seen {
-  user_id String      @unique @db.VarChar(255)
-  post_id String      @unique @db.VarChar(255)
-  user    Users       @relation(fields: [user_id], references: [id])
-  post    Forum_posts @relation(fields: [post_id], references: [id])
-  see_at  String      @db.VarChar(255)
-  flags   String?     @db.VarChar(255)
+  user_id String     @unique @db.VarChar(255)
+  post_id String     @unique @db.VarChar(255)
+  user    Users      @relation(fields: [user_id], references: [id])
+  post    Forum_post @relation(fields: [post_id], references: [id])
+  see_at  String     @db.VarChar(255)
+  flags   String?    @db.VarChar(255)
 }
