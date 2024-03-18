@@ -7,6 +7,12 @@ router.put("/", async (req, res) => {
     switch (req.body.type) {
         case 'user':
             if (!req.body.user_id) return res.json({code: 200, msgCode: 'a-c-400'});
+            const user = await prisma.users.findFirst({
+                where: {
+                    id: req.body.user_id
+                }
+            });
+            if (!user) return res.json({code: 200, msgCode: 'a-c-400'});
             const chat_id : any = functions.system.createSnowflakeId();
             await prisma.chats.create({
                 data: {
