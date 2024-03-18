@@ -16,18 +16,18 @@ router.get("/", async (req, res) => {
 	return res.json({ code: 200, msgCode: "a-a-u-200", topics });
 });
 
-// router.post("/", async (req, res) => {
-// 	if (!req.body.title) return res.json({ code: 400, msgCode: "a-t-400" });
-// 	const topic_id = functions.system.createSnowflakeId();
-// 	const topic = await prisma.forum_topic.create({
-// 		data: {
-// 			id: topic_id,
-// 			title: req.body.title,
-// 			description: req.body.description,
-// 		},
-// 	});
+router.post("/", functions.express.auth.ensureUserIsGlobalAdministrator, async (req, res) => {
+	if (!req.body.title) return res.json({ code: 400, msgCode: "a-t-400" });
+	const topic_id = functions.system.createSnowflakeId();
+	const topic = await prisma.forum_topic.create({
+		data: {
+			id: topic_id,
+			title: req.body.title,
+			description: req.body.description,
+		},
+	});
 
-// 	return res.json({ code: 200, msgCode: "a-t-200", topic });
-// });
+	return res.json({ code: 200, msgCode: "a-t-200", topic });
+});
 
 export default router;
