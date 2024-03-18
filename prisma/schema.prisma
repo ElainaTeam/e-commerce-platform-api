@@ -8,29 +8,61 @@ generator client {
 }
 
 model Users {
-  id                   String                 @unique @db.VarChar(255)
-  email                String                 @unique(map: "email") @db.VarChar(255)
-  username             String
-  icon_name            String?
-  banner_name          String?
-  hashed_password      String
-  create_at            String
-  flags                String
-  posts                Forum_post[]
-  comments             Forum_post_comment[]
-  Forum_post_reactions Forum_post_reactions[]
+  id                    String                  @unique @db.VarChar(255)
+  email                 String                  @unique(map: "email") @db.VarChar(255)
+  username              String
+  icon_name             String?
+  banner_name           String?
+  hashed_password       String
+  create_at             String
+  flags                 String
+  Forum_posts           Forum_posts[]
+  User_posts_seen       User_posts_seen[]
+  Forum_post_comments   Forum_post_comment[]
+  Forum_post_reactions  Forum_post_reactions[]
+  Chats                 User_chats[]
+  User_chat_permissions User_chat_permissions[]
+}
+
+model User_chat_permissions {
+  id      String @unique @db.VarChar(255)
+  user_id String @unique @db.VarChar(255)
+  user    Users  @relation(fields: [user_id], references: [id])
+  permit  String @unique @db.VarChar(255)
+}
+
+model User_chats {
+  id          String  @unique @db.VarChar(255)
+  user_id     String  @unique @db.VarChar(255)
+  user        Users   @relation(fields: [user_id], references: [id])
+  nickname    String?
+  icon_name   String?
+  banner_name String?
+  create_at   String
+  type        String
+  flags       String?
+}
+
+model Chats {
+  id          String  @unique @db.VarChar(255)
+  icon_name   String?
+  banner_name String?
+  create_at   String
+  type        String
+  flags       String?
 }
 
 model Shops {
-  id                String @unique @db.VarChar(255)
-  username          String @unique @db.VarChar(255)
-  name              String @unique @db.VarChar(255)
-  create_at         String @unique @db.VarChar(255)
-  create_by         String @unique @db.VarChar(255)
-  icon_name         String @unique @db.VarChar(255)
-  banner_name       String @unique @db.VarChar(255)
-  short_description String @unique @db.VarChar(255)
-  long_description  String @unique @db.VarChar(255)
+  id                String  @unique @db.VarChar(255)
+  username          String  @unique @db.VarChar(255)
+  name              String  @unique @db.VarChar(255)
+  create_at         String  @unique @db.VarChar(255)
+  create_by         String  @unique @db.VarChar(255)
+  icon_name         String  @unique @db.VarChar(255)
+  banner_name       String  @unique @db.VarChar(255)
+  short_description String  @unique @db.VarChar(255)
+  long_description  String  @unique @db.VarChar(255)
+  flags             String? @db.VarChar(255)
 }
 
 model Products {
@@ -63,28 +95,30 @@ model Product_category {
 }
 
 model Login_states {
-  id        String @unique @db.VarChar(255)
-  user_id   String @db.VarChar(255)
-  create_at String @db.VarChar(255)
-  state     String @db.VarChar(255)
-  auth_type String @default("") @db.VarChar(255)
-  platform  String @db.VarChar(255)
-  next_step String @db.VarChar(255)
-  status    String @db.VarChar(255)
+  id        String  @unique @db.VarChar(255)
+  user_id   String  @db.VarChar(255)
+  create_at String  @db.VarChar(255)
+  state     String  @db.VarChar(255)
+  auth_type String  @default("") @db.VarChar(255)
+  platform  String  @db.VarChar(255)
+  next_step String  @db.VarChar(255)
+  status    String  @db.VarChar(255)
+  flags     String? @db.VarChar(255)
 }
 
 model User_sessions {
-  id            String @unique @db.VarChar(255)
-  create_at     String @db.VarChar(255)
-  create_by     String @db.VarChar(255)
-  expire_at     String @db.VarChar(255)
-  user_id       String @db.VarChar(255)
-  state         String @db.VarChar(255)
-  access_token  String @db.VarChar(255)
-  refresh_token String @db.VarChar(255)
-  agent         String @db.VarChar(255)
-  platform      String @db.VarChar(255)
-  ip            String @db.VarChar(255)
+  id            String  @unique @db.VarChar(255)
+  create_at     String  @db.VarChar(255)
+  create_by     String  @db.VarChar(255)
+  expire_at     String  @db.VarChar(255)
+  user_id       String  @db.VarChar(255)
+  state         String  @db.VarChar(255)
+  access_token  String  @db.VarChar(255)
+  refresh_token String  @db.VarChar(255)
+  agent         String  @db.VarChar(255)
+  platform      String  @db.VarChar(255)
+  ip            String  @db.VarChar(255)
+  flags         String? @db.VarChar(255)
 }
 
 model Shop_permissions {
@@ -100,9 +134,10 @@ model Forum_post_comment {
   user       Users       @relation(fields: [userId], references: [id])
   userId     String
   post_id    String
-  post       Forum_post @relation(fields: [post_id], references: [id])
+  post       Forum_posts @relation(fields: [post_id], references: [id])
   created_at String      @db.VarChar(255)
   updated_at String      @db.VarChar(255)
+  flags      String?     @db.VarChar(255)
 }
 
 model Forum_post_reactions {
@@ -111,35 +146,41 @@ model Forum_post_reactions {
   user       Users       @relation(fields: [userId], references: [id])
   userId     String
   post_id    String
-  posts      Forum_post @relation(fields: [post_id], references: [id])
+  posts      Forum_posts @relation(fields: [post_id], references: [id])
   created_at String      @db.VarChar(255)
   updated_at String      @db.VarChar(255)
+  flags      String?     @db.VarChar(255)
 }
 
 model Forum_topic {
-  id            String       @id @unique @db.VarChar(255)
-  title         String       @unique @db.VarChar(255)
-  description   String       @db.VarChar(255)
-  forum_posts   Forum_post[]
+  id          String        @id @unique @db.VarChar(255)
+  title       String        @unique @db.VarChar(255)
+  description String        @db.VarChar(255)
+  forum_posts Forum_posts[]
+  flags       String?       @db.VarChar(255)
 }
 
-model Forum_post {
-  id              String                        @id @unique @db.VarChar(255)
-  title           String
-  image           String?
-  content         String
-  create_at       String                        @db.VarChar(255)
-  update_at       String                        @db.VarChar(255)
-  user_id         String                        @db.VarChar(255)
-  user            Users                         @relation(fields: [user_id], references: [id])      
-  forum_topics    Forum_topic[]
-  comments        Forum_post_comment[]
-  reactions       Forum_post_reactions[]
-  flag            String                        @default("pending")
+model Forum_posts {
+  id           String                 @id @unique @db.VarChar(255)
+  title        String
+  image        String?
+  content      String
+  create_at    String                 @db.VarChar(255)
+  update_at    String                 @db.VarChar(255)
+  user_id      String                 @db.VarChar(255)
+  user         Users                  @relation(fields: [user_id], references: [id])
+  forum_topics Forum_topic[]
+  comments     Forum_post_comment[]
+  reactions    Forum_post_reactions[]
+  seens        User_posts_seen[]
+  flag         String?                @default("pending")
 }
 
 model User_posts_seen {
-  user_id String @unique @db.VarChar(255)
-  post_id String @unique @db.VarChar(255)
-  see_at  String @db.VarChar(255)
+  user_id String      @unique @db.VarChar(255)
+  post_id String      @unique @db.VarChar(255)
+  user    Users       @relation(fields: [user_id], references: [id])
+  post    Forum_posts @relation(fields: [post_id], references: [id])
+  see_at  String      @db.VarChar(255)
+  flags   String?     @db.VarChar(255)
 }
