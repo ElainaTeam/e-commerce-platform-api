@@ -46,3 +46,9 @@ export default class App {
 }
 const app2 = new App();
 app2.execute();
+process.on('unhandledRejection', err => {
+	return console.log(err);
+});
+process.on('warning', (warning) => {
+	return console.log(warning.stack);
+});
