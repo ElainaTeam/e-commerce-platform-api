@@ -29,6 +29,7 @@ export default class App {
         // 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
 		// 	return next()
 		// })
+		
 		app.use(cors({
 			methods: 'GET, POST, PUT, PATCH, DELETE, OPTION',
 			allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
@@ -36,6 +37,11 @@ export default class App {
 		}))
 		app.use("/*", AuthMiddleware.getUser);
 		app.use("/", routers);
+		app.use(function (err : any, req : any, res : any, next : any) {
+			if (err) {
+				res.status(err.status || 500).json({ code: 500, msg: err.msg })
+			}
+		});
         app.use(async function (req, res, next) {
             return res.json({code: 404, msgCode: 'a-404'});
         })
@@ -46,3 +52,9 @@ export default class App {
 }
 const app2 = new App();
 app2.execute();
+process.on('unhandledRejection', err => {
+	return console.log(err);
+});
+process.on('warning', (warning) => {
+	return console.log(warning.stack);
+});
