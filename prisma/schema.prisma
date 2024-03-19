@@ -165,6 +165,7 @@ model Forum_topic {
   created_at     String       @db.VarChar(255)
   updated_at     String       @db.VarChar(255)
   flags         String?       @db.VarChar(255)
+  icon         String         @db.VarChar(255)
 }
 
 model Forum_post {
