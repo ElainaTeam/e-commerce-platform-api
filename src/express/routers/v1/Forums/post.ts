@@ -3,6 +3,7 @@ import functions from "./../../../../utils/functions";
 import express from "express";
 import ms from "ms";
 const router = express.Router();
+
 router.get("/newfeed", async (req, res) => {
 	const allPost = await prisma.forum_post.findMany({
 		where: {
@@ -37,15 +38,19 @@ router.get("/newfeed", async (req, res) => {
 	}
 	return res.json({ code: 200, msgCode: "a-f-200", posts });
 });
+
 router.get("/", async (req, res) => {
-	let perPage = req.query.limit;
-	let currentPage = req.query.page;
+	let perPage = Number(req.query.limit);
+	let currentPage = Number(req.query.page);
 
 	const allPost = await prisma.forum_post.findMany({
-		take: perPage ? Number(perPage) : 5,
-		skip: currentPage ? (Number(currentPage) - 1) * Number(perPage) : 1,
+		take: perPage || 5,
+		skip: currentPage || 1,
 		where: {
 			flag: "approved",
+			title: {
+				search: req.query.q?.toString().split(" ").join(" & ")
+			},
 		},
 		include: {
 			user: {
@@ -68,6 +73,7 @@ router.get("/", async (req, res) => {
 		posts: allPost,
 	});
 });
+
 router.delete("/:post_id", async (req, res) => {
 	const userPost = await prisma.forum_post.findFirst({
 		where: {
@@ -86,6 +92,7 @@ router.delete("/:post_id", async (req, res) => {
 	});
 	return res.json({ code: 200, msgCode: "a-f-200" });
 });
+
 router.patch("/:post_id", async (req, res) => {
 	const userPost = await prisma.forum_post.findFirst({
 		where: {
