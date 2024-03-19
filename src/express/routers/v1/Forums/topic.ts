@@ -18,6 +18,7 @@ router.get("/", async (req, res) => {
 
 router.post("/", functions.express.auth.ensureUserIsGlobalAdministrator, async (req, res) => {
 	if (!req.body.title) return res.json({ code: 400, msgCode: "a-t-400" });
+	if (!req.body.icon) return res.json({ code: 400, msgCode: "a-t-400" });
 	const topic_id = functions.system.createSnowflakeId();
 	const topic = await prisma.forum_topic.create({
 		data: {
@@ -25,6 +26,7 @@ router.post("/", functions.express.auth.ensureUserIsGlobalAdministrator, async (
 			title: req.body.title,
 			description: req.body.description,
 			created_at: Date.now().toString(),
+			icon: req.body.icon,
 			updated_at: ""
 		},
 	});
