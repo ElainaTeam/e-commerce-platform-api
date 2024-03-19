@@ -158,11 +158,13 @@ model Forum_post_reactions {
 }
 
 model Forum_topic {
-  id            String       @id @unique @db.VarChar(255)
-  title         String       @unique @db.VarChar(255)
-  description   String       @db.VarChar(255)
+  id            String        @id @unique @db.VarChar(255)
+  title         String        @unique @db.VarChar(255)
+  description   String        @db.VarChar(255)
   forum_posts   Forum_post[]
-  flags       String?      @db.VarChar(255)
+  created_at     String       @db.VarChar(255)
+  updated_at     String       @db.VarChar(255)
+  flags         String?       @db.VarChar(255)
 }
 
 model Forum_post {
