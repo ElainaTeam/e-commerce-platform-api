@@ -4,7 +4,7 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["fullTextSearch"]
 }
 
@@ -158,14 +158,14 @@ model Forum_post_reactions {
 }
 
 model Forum_topic {
-  id            String        @id @unique @db.VarChar(255)
-  title         String        @unique @db.VarChar(255)
-  description   String        @db.VarChar(255)
-  forum_posts   Forum_post[]
-  created_at     String       @db.VarChar(255)
-  updated_at     String       @db.VarChar(255)
-  flags         String?       @db.VarChar(255)
-  icon         String         @db.VarChar(255)
+  id          String       @id @unique @db.VarChar(255)
+  title       String       @unique @db.VarChar(255)
+  description String       @db.VarChar(255)
+  forum_posts Forum_post[]
+  created_at  String       @db.VarChar(255)
+  updated_at  String       @db.VarChar(255)
+  flags       String?      @db.VarChar(255)
+  icon        String       @db.VarChar(255)
 }
 
 model Forum_post {
