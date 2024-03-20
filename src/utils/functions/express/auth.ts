@@ -8,8 +8,7 @@ export = {
                 id: data.user_id,
             }
         });
-		const flags = JSON.parse("[" + user?.flags.replace('[', '').replace(']', '').replaceAll(`'`, `"`).replaceAll('`', `"`) + "]");
-        if (flags.includes(data.scope)) return {result: true};
+        if (user.flags.includes(data.scope)) return {result: true};
         return {result: false};
     },
     checkUserPermitOnShop: async function (data: any) {

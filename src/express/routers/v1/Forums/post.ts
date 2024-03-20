@@ -7,7 +7,9 @@ const router = express.Router();
 router.get("/newfeed", async (req, res) => {
 	const allPost = await prisma.forum_post.findMany({
 		where: {
-			flag: "approved",
+			flags: {
+				array_contains: ['approved']
+			},
 		},
 		include: {
 			user: {
@@ -52,7 +54,9 @@ router.get("/", async (req, res) => {
 		take: perPage || 5,
 		skip: currentPage || 0,
 		where: {
-			flag: "approved",
+			flags: {
+				array_contains: ['approved']
+			},
 			title: {
 				search: req.query.q?.toString().split(" ").join(" & ")
 			},
@@ -88,7 +92,9 @@ router.get("/", async (req, res) => {
 router.get("/:post_id", async (req, res) => {
 	const post = await prisma.forum_post.findUnique({
 		where: {
-			flag: "approved",
+			flags: {
+				array_contains: ['approved']
+			},
 			id: req.params.post_id
 		},
 		include: {
@@ -113,7 +119,9 @@ router.get("/:post_id/comments", async (req, res) => {
 
 	const postComments = await prisma.forum_post.findUnique({
 		where: {
-			flag: "approved",
+			flags: {
+				array_contains: ['approved']
+			},
 			id: req.params.post_id
 		},
 		select: {
@@ -197,7 +205,7 @@ router.delete("/:post_id", async (req, res) => {
 			id: req.params.post_id,
 		},
 		data: {
-			flag: "hidden",
+			flags: ['hidden'],
 		},
 	});
 	return res.json({ code: 200, msgCode: "a-f-200" });
@@ -240,7 +248,7 @@ router.post("/", async (req, res) => {
 			user_id: req.user.id,
 			create_at: Date.now().toString(),
 			update_at: Date.now().toString(),
-			flag: "hidden",
+			flags: ["hidden"],
 		},
 	});
 	return res.json({ code: 200, msgCode: "a-f-200", post_id, dataPost });

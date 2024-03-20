@@ -26,8 +26,6 @@ export default class Auth {
 				});
 				if (!userSession || (userSession.expire_at < Date.now())) return next(err);
 				req.user = user;
-				const flags = JSON.parse("[" + user.flags.replace('[', '').replace(']', '').replaceAll(`'`, `"`).replaceAll('`', `"`) + "]");
-				req.user.flags = flags;
 				req.user.access_token = token
 				next();
 			});

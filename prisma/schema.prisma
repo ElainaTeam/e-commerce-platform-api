@@ -16,7 +16,7 @@ model Users {
   banner_name           String?
   hashed_password       String
   create_at             String
-  flags                 String
+  flags                 Json
   Forum_posts           Forum_post[]
   Forum_post_comments   Forum_post_comment[]
   Forum_post_reactions  Forum_post_reactions[]
@@ -130,7 +130,7 @@ model Shop_permissions {
   id      String @unique @db.VarChar(255)
   user_id String @unique @db.VarChar(255)
   shop_id String @unique @db.VarChar(255)
-  flags   String @unique @db.VarChar(255)
+  flags   Json
 }
 
 model Forum_post_comment {
@@ -142,7 +142,7 @@ model Forum_post_comment {
   post       Forum_post @relation(fields: [post_id], references: [id])
   created_at String     @db.VarChar(255)
   updated_at String     @db.VarChar(255)
-  flags      String?    @db.VarChar(255)
+  flags      Json?
 }
 
 model Forum_post_reactions {
@@ -154,7 +154,7 @@ model Forum_post_reactions {
   posts      Forum_post @relation(fields: [post_id], references: [id])
   created_at String     @db.VarChar(255)
   updated_at String     @db.VarChar(255)
-  flags      String?    @db.VarChar(255)
+  flags      Json?
 }
 
 model Forum_topic {
@@ -164,7 +164,7 @@ model Forum_topic {
   forum_posts Forum_post[]
   created_at  String       @db.VarChar(255)
   updated_at  String       @db.VarChar(255)
-  flags       String?      @db.VarChar(255)
+  flags       Json?
   icon        String       @db.VarChar(255)
 }
 
@@ -181,7 +181,7 @@ model Forum_post {
   comments     Forum_post_comment[]
   reactions    Forum_post_reactions[]
   seens        User_posts_seen[]
-  flag         String?                @default("pending")
+  flags        Json?
 }
 
 model User_posts_seen {
@@ -190,5 +190,5 @@ model User_posts_seen {
   user    Users      @relation(fields: [user_id], references: [id])
   post    Forum_post @relation(fields: [post_id], references: [id])
   see_at  String     @db.VarChar(255)
-  flags   String?    @db.VarChar(255)
+  flags   Json?
 }

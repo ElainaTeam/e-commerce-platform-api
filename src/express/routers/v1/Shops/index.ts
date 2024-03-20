@@ -158,7 +158,7 @@ router.put('/', functions.express.auth.ensureAuthenticated, async (req, res) => 
             id: functions.system.createSnowflakeId(),
             user_id: req.user.id,
             shop_id,
-            flags: '["owner"]'
+            flags: ["owner"]
         }
     });
     return res.json({ code: 200, msgCode: 'a-s-200', shop_id });
