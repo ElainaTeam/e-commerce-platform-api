@@ -111,6 +111,14 @@ model Login_states {
   flags     String? @db.VarChar(255)
 }
 
+model Partners {
+  id        String  @unique @db.VarChar(255)
+  name      String  @unique @db.VarChar(255)
+  icon_name String? @unique @db.VarChar(255)
+  create_at String
+  flags     String?
+}
+
 model User_sessions {
   id            String  @unique @db.VarChar(255)
   create_at     String  @db.VarChar(255)

@@ -2,7 +2,10 @@ import prisma from "./../../../../utils/databases/prisma";
 import functions from "./../../../../utils/functions";
 import express from "express";
 const router = express.Router();
-
+router.get("/partners", async (req, res) => {
+    const partners = await prisma.partners.findMany();
+    return res.json({code: 200, msgCode: 'a-h-200', partners});
+})
 router.get("/newfeed", async (req, res) => {
 	const products = await prisma.products.findMany({
         select: {
