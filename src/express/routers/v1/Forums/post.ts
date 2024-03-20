@@ -17,17 +17,22 @@ router.get("/newfeed", async (req, res) => {
 					icon_name: true,
 					banner_name: true,
 					create_at: true,
+					flags: true
 				},
 			},
-			comments: true,
-			reactions: true,
+			_count: {
+				select: {
+					comments: true,
+					reactions: true
+				}
+			},
 			forum_topics: true,
 		},
 	});
 	if (allPost.length <= 0) return res.json({ code: 404, msgCode: "a-f-404" });
 	const latestPosts = allPost.filter((x) => Date.now() - parseInt(String(x.create_at)) < ms("24h"));
-	const mostCommentPosts = allPost.filter((x) => x.comments.length > 5 || x.comments.length > 10);
-	const mostCommentReactions = allPost.filter((x) => x.reactions.length > 5 || x.reactions.length > 10);
+	const mostCommentPosts = allPost.filter((x) => x._count.comments > 5 || x._count.comments > 10);
+	const mostCommentReactions = allPost.filter((x) => x._count.reactions > 5 || x._count.reactions > 10);
 	const posts = [...latestPosts, ...mostCommentPosts, ...mostCommentReactions];
 	if (posts.length < 10) {
 		allPost.forEach(async (post) => {
@@ -60,6 +65,7 @@ router.get("/", async (req, res) => {
 					icon_name: true,
 					banner_name: true,
 					create_at: true,
+					flags: true
 				},
 			},
 			_count: {
@@ -234,7 +240,7 @@ router.post("/", async (req, res) => {
 			user_id: req.user.id,
 			create_at: Date.now().toString(),
 			update_at: Date.now().toString(),
-			flag: "approved",
+			flag: "hidden",
 		},
 	});
 	return res.json({ code: 200, msgCode: "a-f-200", post_id, dataPost });
