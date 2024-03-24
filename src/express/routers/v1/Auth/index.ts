@@ -26,7 +26,36 @@ router.post("/state", async (req, res) => {
 	return res.json({ code: 200, msgCode: "a-a-200", state });
 });
 router.get("/callback", async (req, res) => {
-	// oauth2 login
+	if (!req.body.state) return res.json({ code: 400, msgCode: "a-u-100" });
+
+	const findLoginState: any = await prisma.login_states?.findFirst({
+		where: {
+			state: req.body.state,
+		},
+	});
+	if (!findLoginState || findLoginState?.create_at + ms("5m") < Date.now() || findLoginState.status == "finished") return res.json({ code: 400, msgCode: "a-u-101" });
+	switch (findLoginState.next_step) {
+		case "auth":
+			switch (findLoginState.platform) {
+				case "discord":
+					break;
+				case "google":
+					break;
+			}
+
+			break;
+		case "2fa":
+			break;
+		default:
+			break;
+	}
+	// const createLoginSession = await functions.express.auth.createLoginSession({ req, state: findLoginState, user_id: user.id });
+	// return res.json({
+	// 	code: 200,
+	// 	msgCode: "a-a-200",
+	// 	access_token: createLoginSession.access_token,
+	// 	refresh_token: createLoginSession.refresh_token,
+	// });
 });
 router.post("/revoke", async (req, res) => {
 	if (req.body.access_token) {
@@ -156,7 +185,13 @@ router.post("/callback", async (req, res) => {
 						});
 						return res.json({ code: 201, msgCode: "a-u-105" }); // need an additional step
 					} else {
-						return createLoginSession({ state: findLoginState.state, user });
+						const createLoginSession = await functions.express.auth.createLoginSession({ req, state: findLoginState, user_id: user.id });
+						return res.json({
+							code: 200,
+							msgCode: "a-a-200",
+							access_token: createLoginSession.access_token,
+							refresh_token: createLoginSession.refresh_token,
+						});
 					}
 				} else {
 					return res.json({ code: 400, msgCode: "a-u-103" }); // invalid login info
@@ -168,46 +203,6 @@ router.post("/callback", async (req, res) => {
 			break;
 		default:
 			break;
-	}
-	async function createLoginSession(data: any) {
-		await prisma.login_states?.update({
-			where: {
-				id: findLoginState.id,
-				state: req.body.state,
-			},
-			data: {
-				status: "finished",
-				next_step: "",
-			},
-		});
-		const access_token = await jwt.sign({ id: data.user.id }, `${process.env.JWT_ACCESS_SECRET}`, {
-			expiresIn: ms(`${process.env.JWT_ACCESS_TIME_LIVE}`), //thử xem // đc kìa yep
-		});
-		const refresh_token = await jwt.sign({ id: data.user.id }, `${process.env.JWT_REFRESH_SECRET}`, {
-			expiresIn: ms(`${process.env.JWT_REFRESH_TIME_LIVE}`), //thử xem // đc kìa yep
-		});
-		const agent: any = req.useragent;
-		await prisma.user_sessions.create({
-			data: {
-				id: functions.system.createSnowflakeId(),
-				create_at: Date.now().toString(),
-				create_by: data.user.id,
-				user_id: data.user.id,
-				expire_at: (Date.now() + ms("1h")).toString(),
-				state: req.body.state,
-				access_token,
-				refresh_token,
-				agent: agent.source,
-				platform: agent.platform,
-				ip: "",
-			},
-		});
-		return res.json({
-			code: 200,
-			msgCode: "a-a-200",
-			access_token,
-			refresh_token,
-		});
 	}
 });
 router.post("/register", async (req, res) => {

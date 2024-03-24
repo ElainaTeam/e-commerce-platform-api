@@ -1,5 +1,7 @@
 import prisma from '../../../utils/databases/prisma'
 import functions from '..';
+import ms from "ms";
+import jwt from "jsonwebtoken";
 export = {
     // This stuff will ensure that logged in to a valid credential
     checkUserPermitOnGlobal: async function (data: any) {
@@ -80,4 +82,43 @@ export = {
     forwardAuthenticated: async function() {
         
     },
+    createLoginSession: async function(data : any) {
+        await prisma.login_states?.update({
+			where: {
+				id: data.state.id,
+				state: data.req.body.state,
+			},
+			data: {
+				status: "finished",
+				next_step: "",
+			},
+		});
+		const access_token = await jwt.sign({ id: data.user_id }, `${process.env.JWT_ACCESS_SECRET}`, {
+			expiresIn: ms(`${process.env.JWT_ACCESS_TIME_LIVE}`), //thử xem // đc kìa yep
+		});
+		const refresh_token = await jwt.sign({ id: data.user_id }, `${process.env.JWT_REFRESH_SECRET}`, {
+			expiresIn: ms(`${process.env.JWT_REFRESH_TIME_LIVE}`), //thử xem // đc kìa yep
+		});
+		const agent: any = data.req.useragent;
+		await prisma.user_sessions.create({
+			data: {
+				id: functions.system.createSnowflakeId(),
+				create_at: Date.now().toString(),
+				create_by: data.user_id,
+				user_id: data.user_id,
+				expire_at: (Date.now() + ms("1h")).toString(),
+				state: data.req.body.state,
+				access_token,
+				refresh_token,
+				agent: agent.source,
+				platform: agent.platform,
+				ip: "",
+			},
+		});
+        return {
+            sucess: true,
+            access_token,
+            refresh_token
+        }
+    }
 }
