@@ -4,7 +4,7 @@ import prisma from "../utils/databases/prisma";
 export default class Auth {
 	public static getUser(req: Request, res: Response, next: NextFunction) {
 		req.user = null;
-		const authHeader : any = req.headers["authorization"] || req.headers["Authorization"];
+		const authHeader : any = req.headers["authorization"] || req.headers["Authorization"] || req.cookies?.jwt || req.cookies?.access_token || req.cookies?.accessToken;
 		const token = authHeader && authHeader.split(" ")[1];
 
 		if (!authHeader || !token) return next();

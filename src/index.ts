@@ -8,8 +8,13 @@ import routers from "./express/routers/index";
 import prisma from "./utils/databases/prisma";
 import functions from "./utils/functions";
 import { config } from 'dotenv'
+// import swagger from 'swagger-node-express'
 const app = express();
-
+import {swaggerDocument} from './static/swagger';
+// var options = {
+// 	explorer: true
+// };
+// swagger.setAppHandler(app);
 export default class App {
 	Express = app;
 	Config = Config;
@@ -24,6 +29,8 @@ export default class App {
 		app.use(express.raw());
 		app.use(useragent.express());
 		app.use(cookieParser());
+		// app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument, options));
+		// app.get('/api-docs', swaggerUi.setup(swaggerDocument));
 		// app.use(async function (req: any, res, next) {
 		// 	res.header("Access-Control-Allow-Origin", "*");
         // 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
@@ -33,7 +40,9 @@ export default class App {
 		app.use(cors({
 			methods: 'GET, POST, PUT, PATCH, DELETE, OPTION',
 			allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
-			origin: '*'
+			origin: ['http://localhost:3000/'],
+			credentials: true,
+			preflightContinue: true
 		}))
 		app.use("/*", AuthMiddleware.getUser);
 		app.use("/", routers);
