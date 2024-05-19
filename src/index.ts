@@ -40,7 +40,7 @@ export default class App {
 		app.use(cors({
 			methods: 'GET, POST, PUT, PATCH, DELETE, OPTION',
 			allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
-			origin: ['http://localhost:3000/'],
+			origin: (_, callback) => callback(null, true),
 			credentials: true,
 			preflightContinue: true
 		}))
