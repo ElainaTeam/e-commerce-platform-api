@@ -99,6 +99,16 @@ router.get("/:post_id", async (req, res) => {
 		},
 		include: {
 			forum_topics: true,
+			user: {
+				select: {
+					id: true,
+					username: true,
+					icon_name: true,
+					banner_name: true,
+					create_at: true,
+					flags: true
+				},
+			},
 			_count: {
 				select: {
 					reactions: true,
