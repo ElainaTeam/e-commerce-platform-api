@@ -230,7 +230,7 @@ router.post("/register", async (req, res) => {
 				hashed_password: hash,
 				create_at: Date.now().toString(),
 				email: req.body.email,
-				flags: ['member', 'admin', 'mod'],
+				flags: ['member', 'admin', 'mod'], //FIX LATER
 			},
 		});
 		return res.json({

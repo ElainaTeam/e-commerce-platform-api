@@ -19,6 +19,9 @@ router.get("/:id", async (req, res) => {
 		where: {
 			id: req.params.id,
 		},
+		omit: {
+			hashed_password: true
+		}
 	});
 	if (!user)
 		return res.status(404).json({
@@ -28,13 +31,7 @@ router.get("/:id", async (req, res) => {
 	return res.json({
 		code: 200,
 		msg: "a-u-200",
-		user: {
-			id: user.id,
-			username: user.username,
-			email: user.email,
-			create_at: user.create_at,
-			flags: user.flags,
-		},
+		user: user
 	});
 });
 

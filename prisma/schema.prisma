@@ -5,7 +5,7 @@ datasource db {
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["fullTextSearch"]
+  previewFeatures = ["fullTextSearch", "omitApi"]
 }
 
 model Users {
@@ -19,10 +19,11 @@ model Users {
   flags                 Json
   Forum_posts           Forum_post[]
   Forum_post_comments   Forum_post_comment[]
-  Forum_post_reactions  Forum_post_reactions[]
   Forum_posts_seen      User_posts_seen[]
   Chats                 User_chats[]
   User_chat_permissions User_chat_permissions[]
+  reaction_post         Json?
+  reaction_comment      Json?
 }
 
 model User_chat_permissions {
@@ -148,21 +149,17 @@ model Forum_post_comment {
   userId     String
   post_id    String
   post       Forum_post @relation(fields: [post_id], references: [id])
+  reactions  Int
   created_at String     @db.VarChar(255)
   updated_at String     @db.VarChar(255)
   flags      Json?
 }
 
-model Forum_post_reactions {
-  id         String     @unique @db.VarChar(255)
-  reaction   String
-  user       Users      @relation(fields: [userId], references: [id])
-  userId     String
-  post_id    String
-  posts      Forum_post @relation(fields: [post_id], references: [id])
-  created_at String     @db.VarChar(255)
-  updated_at String     @db.VarChar(255)
-  flags      Json?
+model Forum_post_comment_reaction {
+  comment_id    String     @db.VarChar(255)
+  user_id       String     @db.VarChar(255)
+
+  @@id([comment_id, user_id])
 }
 
 model Forum_topic {
@@ -187,9 +184,16 @@ model Forum_post {
   user         Users                  @relation(fields: [user_id], references: [id])
   forum_topics Forum_topic[]
   comments     Forum_post_comment[]
-  reactions    Forum_post_reactions[]
+  reactions    Int
   seens        User_posts_seen[]
   flags        Json?
+}
+
+model Forum_post_reaction {
+  post_id    String     @db.VarChar(255)
+  user_id    String     @db.VarChar(255)
+
+  @@id([post_id, user_id])
 }
 
 model User_posts_seen {
