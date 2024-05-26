@@ -3,6 +3,7 @@
 ### Admin
 > [!TIP]
 > **GET** /v1/admin/Users/**:user_id** -> ***Get user***
+>
 > **PATCH** /v1/admin/Users/**:user_id** -> ***Updating...***
 
 ### Auth

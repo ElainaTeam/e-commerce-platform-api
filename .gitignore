@@ -26,3 +26,7 @@ dprint.json
 
 # Prod environment delete
 .env
+
+#Primsa migration
+
+prisma/migrations/**/*

@@ -149,7 +149,7 @@ model Forum_post_comment {
   userId     String
   post_id    String
   post       Forum_post @relation(fields: [post_id], references: [id])
-  reactions  Int
+  reactions  Int        @default(0)
   created_at String     @db.VarChar(255)
   updated_at String     @db.VarChar(255)
   flags      Json?
@@ -184,7 +184,7 @@ model Forum_post {
   user         Users                  @relation(fields: [user_id], references: [id])
   forum_topics Forum_topic[]
   comments     Forum_post_comment[]
-  reactions    Int
+  reactions    Int                    @default(0)
   seens        User_posts_seen[]
   flags        Json?
 }
