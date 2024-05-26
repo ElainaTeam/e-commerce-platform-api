@@ -156,8 +156,8 @@ model Forum_post_comment {
 }
 
 model Forum_post_comment_reaction {
-  comment_id    String     @db.VarChar(255)
-  user_id       String     @db.VarChar(255)
+  comment_id String @db.VarChar(255)
+  user_id    String @db.VarChar(255)
 
   @@id([comment_id, user_id])
 }
@@ -174,24 +174,24 @@ model Forum_topic {
 }
 
 model Forum_post {
-  id           String                 @id @unique @db.VarChar(255)
+  id           String               @id @unique @db.VarChar(255)
   title        String
   image        String?
   content      String
-  create_at    String                 @db.VarChar(255)
-  update_at    String                 @db.VarChar(255)
-  user_id      String                 @db.VarChar(255)
-  user         Users                  @relation(fields: [user_id], references: [id])
+  create_at    String               @db.VarChar(255)
+  update_at    String               @db.VarChar(255)
+  user_id      String               @db.VarChar(255)
+  user         Users                @relation(fields: [user_id], references: [id])
   forum_topics Forum_topic[]
   comments     Forum_post_comment[]
-  reactions    Int                    @default(0)
+  reactions    Int                  @default(0)
   seens        User_posts_seen[]
   flags        Json?
 }
 
 model Forum_post_reaction {
-  post_id    String     @db.VarChar(255)
-  user_id    String     @db.VarChar(255)
+  post_id String @db.VarChar(255)
+  user_id String @db.VarChar(255)
 
   @@id([post_id, user_id])
 }
