@@ -321,7 +321,40 @@ router.patch("/reaction/:post_id", async (req, res) => {
 	return res.json({ code: 200, msgCode: "a-f-200"})
 })
 
-router.patch("/reaction/:comment_id", async (req, res) => {
+router.delete("/reaction/:post_id", async (req, res) => {
+	const getExistPost = await prisma.forum_post_reaction.findFirst({
+		where: {
+			user_id: req.user.id,
+			post_id: req.params.post_id
+		}
+	})
+	
+	if(!getExistPost) return res.json({ code: 400, msgCode: "a-f-400" })
+
+	await prisma.forum_post.update({
+		where: {
+			id: req.params.post_id
+		},
+		data: {
+			reactions: {
+				decrement: 1
+			}
+		}
+	})
+
+	await prisma.forum_post_reaction.delete({
+		where: {
+			post_id_user_id: {
+				post_id: req.params.post_id,
+				user_id: req.user.id
+			}
+		}
+	})
+
+	return res.json({ code: 200, msgCode: "a-f-200"})
+})
+
+router.delete("/reaction/:comment_id", async (req, res) => {
 	const getExistPost = await prisma.forum_post_comment_reaction.findFirst({
 		where: {
 			user_id: req.user.id,
@@ -329,7 +362,7 @@ router.patch("/reaction/:comment_id", async (req, res) => {
 		}
 	})
 	
-	if(getExistPost) return res.json({ code: 400, msgCode: "a-f-400" })
+	if(!getExistPost) return res.json({ code: 400, msgCode: "a-f-400" })
 
 	await prisma.forum_post.update({
 		where: {
@@ -337,15 +370,50 @@ router.patch("/reaction/:comment_id", async (req, res) => {
 		},
 		data: {
 			reactions: {
-				increment: 1
+				decrement: 1
 			}
 		}
 	})
 
-	await prisma.forum_post_comment_reaction.create({
-		data: {
+	await prisma.forum_post_comment_reaction.delete({
+		where: {
+			comment_id_user_id: {
+				comment_id: req.params.comment_id,
+				user_id: req.user.id
+			}
+		}
+	})
+
+	return res.json({ code: 200, msgCode: "a-f-200"})
+})
+
+router.delete("/reaction/:comment_id", async (req, res) => {
+	const getExistPost = await prisma.forum_post_comment_reaction.findFirst({
+		where: {
 			user_id: req.user.id,
 			comment_id: req.params.comment_id
+		}
+	})
+	
+	if(!getExistPost) return res.json({ code: 400, msgCode: "a-f-400" })
+
+	await prisma.forum_post.update({
+		where: {
+			id: req.params.comment_id
+		},
+		data: {
+			reactions: {
+				decrement: 1
+			}
+		}
+	})
+
+	await prisma.forum_post_comment_reaction.delete({
+		where: {
+			comment_id_user_id: {
+				comment_id: req.params.comment_id,
+				user_id: req.user.id
+			}
 		}
 	})
 
