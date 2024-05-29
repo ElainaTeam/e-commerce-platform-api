@@ -162,7 +162,8 @@ router.patch("/:post_id", async (req, res) => {
 	if (userPost.user_id !== req.user.id) return res.json({ code: 403, msgCode: "a-f-403" });
 	const objKeys: any = Object.keys(req.body);
 	if (objKeys.some((r: any) => ["id", "create_at", "user_id", "flag"].includes(r))) return res.json({ code: 400, msgCode: "a-f-403" });
-	req.body.update_at = Date.now();
+	
+	req.body.update_at = String(Date.now());
 	await prisma.forum_post.update({
 		where: {
 			id: req.params.post_id,
@@ -445,7 +446,7 @@ router.delete("/reaction/:comment_id/comment", async (req, res) => {
 
 	if(!isCommentExist) return res.json({ code: 404, msgCode: "a-f-404" })
 
-	await prisma.forum_post.update({
+	await prisma.forum_post_comment.update({
 		where: {
 			id: req.params.comment_id
 		},
