@@ -52,7 +52,7 @@ router.get("/", async (req, res) => {
 	let perPage = Number(req.query.limit);
 	let currentPage = (Number(req.query.page) - 1) * perPage;
 
-	const allPost = await prisma.forum_post.findMany({
+	const posts = await prisma.forum_post.findMany({
 		take: perPage || 5,
 		skip: currentPage || 0,
 		where: {
@@ -80,18 +80,27 @@ router.get("/", async (req, res) => {
 				}
 			},
 			forum_topics: true,
+			reaction: true
 		},
 	});
+
+	const allPosts = posts.map(post => {
+		const hasReacted = post.reaction.some(reaction => reaction.user_id === req.user.id)
+		return {
+			...post,
+			hasReacted
+		}
+	})
 
 	return res.json({
 		code: 200,
 		msg: "a-f-200",
-		posts: allPost,
+		posts: allPosts,
 	});
 });
 
 router.get("/:post_id", async (req, res) => {
-	const post = await prisma.forum_post.findUnique({
+	let post = await prisma.forum_post.findUnique({
 		where: {
 			flags: {
 				array_contains: ['approved']
@@ -114,13 +123,14 @@ router.get("/:post_id", async (req, res) => {
 				select: {
 					comments: true,
 				}
-			}
+			},
+			reaction: true
 		},
 	})
-
 	if(!post) return res.json({ code: 404, msgCode: "a-f-404"})
+	const hasReacted = post?.reaction.some(reaction => reaction.user_id === req.user.id)
 
-	return res.json({ code: 200, msgCode: "a-f-200", post })
+	return res.json({ code: 200, msgCode: "a-f-200", post, hasReacted })
 })
 
 router.delete("/:post_id", async (req, res) => {
@@ -213,6 +223,7 @@ router.get("/:post_id/comments", async (req, res) => {
 							create_at: true,
 						},
 					},
+					reaction: true
 				}
 			},
 		}
@@ -220,7 +231,14 @@ router.get("/:post_id/comments", async (req, res) => {
 
 	if(!postComments) return res.json({ code: 404, msgCode: "a-f-404"})
 
-	return res.json({ code: 200, msgCode: "a-f-200", postComments })
+	const allPostComments = postComments.comments.map(comment => {
+		const hasReacted = comment.reaction.some(reaction => reaction.user_id === req.user.id)
+		return {
+			...comment,
+			hasReacted
+		}
+	})
+	return res.json({ code: 200, msgCode: "a-f-200", allPostComments })
 })
 
 router.post("/:post_id/comments", async (req, res) => {
@@ -300,6 +318,14 @@ router.patch("/reaction/:post_id", async (req, res) => {
 	
 	if(getExistPost) return res.json({ code: 400, msgCode: "a-f-400" })
 
+	const isPostExist = await prisma.forum_post.findFirst({
+		where: {
+			id: req.params.post_id
+		}
+	})
+
+	if(!isPostExist) return res.json({ code: 404, msgCode: "a-f-404" })
+
 	await prisma.forum_post.update({
 		where: {
 			id: req.params.post_id
@@ -331,6 +357,14 @@ router.delete("/reaction/:post_id", async (req, res) => {
 	
 	if(!getExistPost) return res.json({ code: 400, msgCode: "a-f-400" })
 
+	const isPostExist = await prisma.forum_post.findFirst({
+		where: {
+			id: req.params.post_id
+		}
+	})
+
+	if(!isPostExist) return res.json({ code: 404, msgCode: "a-f-404" })
+
 	await prisma.forum_post.update({
 		where: {
 			id: req.params.post_id
@@ -354,48 +388,62 @@ router.delete("/reaction/:post_id", async (req, res) => {
 	return res.json({ code: 200, msgCode: "a-f-200"})
 })
 
-router.delete("/reaction/:comment_id", async (req, res) => {
-	const getExistPost = await prisma.forum_post_comment_reaction.findFirst({
+router.patch("/reaction/:comment_id/comment", async (req, res) => {
+	const getExistComment = await prisma.forum_post_comment_reaction.findFirst({
 		where: {
 			user_id: req.user.id,
 			comment_id: req.params.comment_id
 		}
 	})
 	
-	if(!getExistPost) return res.json({ code: 400, msgCode: "a-f-400" })
+	if(getExistComment) return res.json({ code: 400, msgCode: "a-f-400" })
 
-	await prisma.forum_post.update({
+	const isCommentExist = await prisma.forum_post_comment.findFirst({
+		where: {
+			id: req.params.comment_id
+		}
+	})
+
+	if(!isCommentExist) return res.json({ code: 404, msgCode: "a-f-404" })
+
+	await prisma.forum_post_comment.update({
 		where: {
 			id: req.params.comment_id
 		},
 		data: {
 			reactions: {
-				decrement: 1
+				increment: 1
 			}
 		}
 	})
 
-	await prisma.forum_post_comment_reaction.delete({
-		where: {
-			comment_id_user_id: {
-				comment_id: req.params.comment_id,
-				user_id: req.user.id
-			}
+	await prisma.forum_post_comment_reaction.create({
+		data: {
+			user_id: req.user.id,
+			comment_id: req.params.comment_id
 		}
 	})
 
 	return res.json({ code: 200, msgCode: "a-f-200"})
 })
 
-router.delete("/reaction/:comment_id", async (req, res) => {
-	const getExistPost = await prisma.forum_post_comment_reaction.findFirst({
+router.delete("/reaction/:comment_id/comment", async (req, res) => {
+	const getExistComment = await prisma.forum_post_comment_reaction.findFirst({
 		where: {
 			user_id: req.user.id,
 			comment_id: req.params.comment_id
 		}
 	})
 	
-	if(!getExistPost) return res.json({ code: 400, msgCode: "a-f-400" })
+	if(!getExistComment) return res.json({ code: 400, msgCode: "a-f-400" })
+
+	const isCommentExist = await prisma.forum_post_comment.findFirst({
+		where: {
+			id: req.params.comment_id
+		}
+	})
+
+	if(!isCommentExist) return res.json({ code: 404, msgCode: "a-f-404" })
 
 	await prisma.forum_post.update({
 		where: {

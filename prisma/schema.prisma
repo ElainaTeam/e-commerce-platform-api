@@ -22,8 +22,8 @@ model Users {
   Forum_posts_seen      User_posts_seen[]
   Chats                 User_chats[]
   User_chat_permissions User_chat_permissions[]
-  reaction_post         Json?
-  reaction_comment      Json?
+  reaction_post         Forum_post_reaction[]
+  reaction_comment      Forum_post_comment_reaction[]
 }
 
 model User_chat_permissions {
@@ -150,6 +150,7 @@ model Forum_post_comment {
   post_id    String
   post       Forum_post @relation(fields: [post_id], references: [id])
   reactions  Int        @default(0)
+  reaction   Forum_post_comment_reaction[]
   created_at String     @db.VarChar(255)
   updated_at String     @db.VarChar(255)
   flags      Json?
@@ -158,6 +159,8 @@ model Forum_post_comment {
 model Forum_post_comment_reaction {
   comment_id String @db.VarChar(255)
   user_id    String @db.VarChar(255)
+  comment    Forum_post_comment @relation(fields: [comment_id], references: [id])
+  user       Users              @relation(fields: [user_id], references: [id])
 
   @@id([comment_id, user_id])
 }
@@ -185,6 +188,7 @@ model Forum_post {
   forum_topics Forum_topic[]
   comments     Forum_post_comment[]
   reactions    Int                  @default(0)
+  reaction     Forum_post_reaction[]
   seens        User_posts_seen[]
   flags        Json?
 }
@@ -192,6 +196,8 @@ model Forum_post {
 model Forum_post_reaction {
   post_id String @db.VarChar(255)
   user_id String @db.VarChar(255)
+  post    Forum_post @relation(fields: [post_id], references: [id])
+  user    Users      @relation(fields: [user_id], references: [id])
 
   @@id([post_id, user_id])
 }
