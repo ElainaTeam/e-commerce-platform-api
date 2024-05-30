@@ -16,7 +16,12 @@ router.get("/@me", (req, res) => {
 });
 
 router.get("/@me/posts", async (req, res) => {
+	let perPage = Number(req.query.limit);
+	let currentPage = (Number(req.query.page) - 1) * perPage;
+
 	const getPost = await prisma.forum_post.findMany({ 
+		take: perPage || 5,
+		skip: currentPage || 0,
 		where: {
 			user_id: req.user.id
 		}
@@ -30,7 +35,12 @@ router.get("/@me/posts", async (req, res) => {
 })
 
 router.get("/@me/reactions", async (req, res) => {
+	let perPage = Number(req.query.limit);
+	let currentPage = (Number(req.query.page) - 1) * perPage;
+
 	const getPostReaction = await prisma.forum_post_reaction.findMany({
+		take: perPage || 5,
+		skip: currentPage || 0,
 		where: {
 			user_id: req.user.id
 		},
@@ -47,7 +57,12 @@ router.get("/@me/reactions", async (req, res) => {
 })
 
 router.get("/@me/reactions/comment", async (req, res) => {
+	let perPage = Number(req.query.limit);
+	let currentPage = (Number(req.query.page) - 1) * perPage;
+
 	const getCommentReaction = await prisma.forum_post_comment_reaction.findMany({
+		take: perPage || 5,
+		skip: currentPage || 0,
 		where: {
 			user_id: req.user.id
 		},
