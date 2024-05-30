@@ -15,6 +15,9 @@ export default class Auth {
 				const user : any = await prisma.users.findFirst({
 					where: {
 						id: String(userToken.id)
+					},
+					omit: {
+						hashed_password: true,
 					}
 				});
 				if (!user) return next(err);
@@ -26,7 +29,7 @@ export default class Auth {
 				});
 				if (!userSession || (userSession.expire_at < Date.now())) return next(err);
 				req.user = user;
-				req.user.access_token = token
+				// req.user.access_token = token
 				next();
 			});
 		} catch (error) {
